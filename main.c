@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define LENGTH 6
+#define LENGTH 5
 
 int rolls[LENGTH];
 int throws = 0;
@@ -15,15 +16,24 @@ void translate(const int array[]);
 
 //this should be the func to save dice, rest of the dice should be rerolled (max 3 times)
 //if the player saves all, then his turn must end (later on)
-void keepDice(int ch, const int array[]);
+bool keepDice(int keep);
 
 int main() {
-    int choice = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
+    int numToKeep = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
+    //printf("First roll: \n");
+
     roll();
     setbuf(stdout, 0);
-    printf("Which dice do you want to keep?\nChoose between 0 and 5!\n");
-    scanf("%d", &choice);
-    keepDice(choice, rolls);
+    printf("How many dice to save?\n");
+    scanf("%d", &numToKeep);
+    bool isTurnEnded = keepDice(numToKeep);
+    if (!isTurnEnded) {
+        setbuf(stdout, 0);
+        printf("How many dice to save?\n");
+        scanf("%d", &numToKeep);
+        keepDice(numToKeep);
+    }
+
     translate(rolls);//calls the printing function to see the rolls
     //testing print
     for (int j = 0; j < LENGTH; j++) {
@@ -35,19 +45,20 @@ int main() {
 
     return 0;
 }
+
 //suitable only for first time roll to fill the array with random numbers
 //not going to work with rerolls probably
 //might work if I put the old rolls at the start and reroll just the last spaces in the array
 void roll() {
     int currRoll;//int to save the current roll used for testing now
     srand((unsigned int) time(NULL));
-    for (int i = 0; i <= 5; i++) {
+    for (int i = 0; i < LENGTH; i++) {
         currRoll = rand() % 6;// save current roll here
-        rolls[i] = currRoll; // later on should be:  rolls[i] = rand() % 6;
-        setbuf(stdout, 0);
-        printf("%d ", currRoll);//just checking
+        rolls[i] = currRoll; // later on should be:  rolls[i] = rand() % 6
     }
+    setbuf(stdout, 0);
     printf("\n");//beauty print
+    translate(rolls);
 }
 
 void translate(const int array[]) {
@@ -80,6 +91,7 @@ void translate(const int array[]) {
                 printf("%-7s", "Ace");
                 break;
             default:
+                printf("wrong number: %d \n", array[i]);
                 break;
         }
     }
@@ -89,9 +101,31 @@ void translate(const int array[]) {
 
 /*  0 = 9; 1 = 10; 2 = Jack; 3 = Queen; 4 = King; 5 = Ace */
 
-void keepDice(int ch, const int array[]) {
-    int tmp[LENGTH];
-    for (int i = 0; i < LENGTH; i++) {
-        tmp[i] = array[i];
+bool keepDice(int keep) {
+    int currDice;
+    if (keep == 5) {
+        return true;
+    } else {// search
+        int arrayKeep[keep];
+        setbuf(stdout, 0);
+        printf("Which one to keep? Separate with enters.\n");
+        for (int k = 0; k < keep; k++) {
+            scanf("%d", &currDice);
+            arrayKeep[k] = currDice;
+        }
+        for (int j = 0; j < 5; j++) {//
+            bool isKeep = false;
+            for (int i = 0; i < keep; i++) {
+                if (arrayKeep[i] == j) {
+                    isKeep = true;
+                }
+            }
+            if (!isKeep) {
+                srand((unsigned int) time(NULL));
+                rolls[j] = rand() % 6;
+            }
+        }
+        translate(rolls);
+        return false;
     }
 }
