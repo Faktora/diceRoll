@@ -1,0 +1,3 @@
+C:/Users/Faktora/Desktop/LinuxHome/Aufgaben/PokerDice/cmake-build-debug/CMakeFiles/PokerDice.dir
+C:/Users/Faktora/Desktop/LinuxHome/Aufgaben/PokerDice/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Faktora/Desktop/LinuxHome/Aufgaben/PokerDice/cmake-build-debug/CMakeFiles/rebuild_cache.dir
