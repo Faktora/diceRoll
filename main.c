@@ -27,7 +27,7 @@ bool keepDice(int keep);
  *  Queens are 4 points
  *  Kings are 5 points
  *  Aces are 6 points*/
-void countPoints(int array[]);
+void countPoints(const int array[]);
 
 int main() {
     int numToKeep = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
@@ -35,22 +35,23 @@ int main() {
 
     roll();
     setbuf(stdout, 0);
-    printf("How many dice to save?\n");
+    printf("\nHow many dice to save?\n");
     scanf("%d", &numToKeep);
     bool isTurnEnded = keepDice(numToKeep);
     if (!isTurnEnded) {
         setbuf(stdout, 0);
-        printf("How many dice to save?\n");
+        printf("\nHow many dice to save?\n");
         scanf("%d", &numToKeep);
         keepDice(numToKeep);
     }
 
     translate(playerOneRolls);//calls the printing function to see the rolls
-    //testing print
+    countPoints(playerOneRolls);
+    /*testing print
     for (int j = 0; j < LENGTH; j++) {
         setbuf(stdout, 0);
         printf("%d ", playerOneRolls[j]);
-    }
+    }*/
     setbuf(stdout, 0);
     printf("\n");
 
@@ -70,40 +71,31 @@ void roll() {
     setbuf(stdout, 0);
     printf("\n");//beauty print
     translate(playerOneRolls);
+    countPoints(playerOneRolls);
 }
 
 void translate(const int array[]) {
     //going through the array taking each element and then putting it in the switch machine for proper print
     for (int i = 0; i < LENGTH; i++) {
         //later on i can dump the tmp and just stay with:   switch(array[i])
-        switch (array[i]) {
-            case 0:
-                setbuf(stdout, 0);
-                printf("%-7d", 9);
-                break;
-            case 1:
-                setbuf(stdout, 0);
-                printf("%-7d", 10);
-                break;
-            case 2:
-                setbuf(stdout, 0);
-                printf("%-7s", "Jack");
-                break;
-            case 3:
-                setbuf(stdout, 0);
-                printf("%-7s", "Queen");
-                break;
-            case 4:
-                setbuf(stdout, 0);
-                printf("%-7s", "King");
-                break;
-            case 5:
-                setbuf(stdout, 0);
-                printf("%-7s", "Ace");
-                break;
-            default:
-                printf("wrong number: %d \n", array[i]);
-                break;
+        if (array[i] == 0) {
+            setbuf(stdout, 0);
+            printf("%-7d", 9);
+        }else if(array[i] == 1) {
+            setbuf(stdout, 0);
+            printf("%-7d", 10);
+        }else if (array[i] == 2) {
+            setbuf(stdout, 0);
+            printf("%-7s", "Jack");
+        }else if (array[i] == 3) {
+            setbuf(stdout, 0);
+            printf("%-7s", "Queen");
+        }else if (array[i] == 4) {
+            setbuf(stdout, 0);
+            printf("%-7s", "King");
+        }else if (array[i] == 5){
+            setbuf(stdout, 0);
+            printf("%-7s", "Ace");
         }
     }
     setbuf(stdout, 0);
@@ -119,7 +111,7 @@ bool keepDice(int keep) {
     } else {// search
         int arrayKeep[keep];
         setbuf(stdout, 0);
-        printf("Which one to keep? Separate with enters.\n");
+        printf("\nWhich one to keep? Separate with enters.\n");
         for (int k = 0; k < keep; k++) {
             scanf("%d", &currDice);
             arrayKeep[k] = currDice;
@@ -137,6 +129,7 @@ bool keepDice(int keep) {
             }
         }
         translate(playerOneRolls);
+        countPoints(playerOneRolls);
         return false;
     }
 }
@@ -148,31 +141,26 @@ bool keepDice(int keep) {
  *  Queens are 4 points
  *  Kings are 5 points
  *  Aces are 6 points*/
-void countPoints(int array[]){
+void countPoints(const int array[]) {
     int tempSum = 0;
     for (int i = 0; i < LENGTH; i++) {
-        switch (array[i]){
-            case 0:
-                tempSum += 1; // one point for 9s
-                break;
-            case 1:
-                tempSum += 2; // two points for 10s
-                break;
-            case 2:
-                tempSum += 3; // three points for Jacks
-                break;
-            case 3:
-                tempSum += 4; // four points for Queens
-                break;
-            case 4:
-                tempSum += 5; // five points for Kings
-                break;
-            case 5:
-                tempSum += 6; // six points for Aces
-                break;
+        if (array[i] == 0) {
+            if (array[i] == 0) {
+                tempSum += 1;
+            } else if (array[i] == 1) {
+                tempSum += 2;
+            } else if (array[i] == 2) {
+                tempSum += 3;
+            } else if (array[i] == 3) {
+                tempSum += 4;
+            } else if (array[i] == 4) {
+                tempSum += 5;
+            } else if (array[i] == 5) {
+                tempSum += 6;
+            }
+            playerOnePoints = tempSum;
         }
-        playerOnePoints = tempSum;
-    }
-    printf("Player one got: %d points this round.\n", playerOnePoints);
+        printf("Player one got: %d points this round.\n", playerOnePoints);
 
+    }
 }
