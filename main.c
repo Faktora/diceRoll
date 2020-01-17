@@ -69,10 +69,9 @@ int main() {
         printf("\n");
 
     }
-    printf("Player %d WINS!\n", currentPlayer);
+    printf("Player %d wins with: %d points!\n", currentPlayer, playerPoints[currentPlayer + 1]);
     return 0;
 }
-
 
 void translate(const int array[]) {
     //going through the array taking each element and then putting it in the switch machine for proper print
@@ -114,10 +113,11 @@ bool keepDice(int keep, int *rollsAmount) {
             setbuf(stdout, 0);
             printf("\nHow many dice to save?\n");
             scanf("%d", &keep);
-        }if(keep == 5){ //if no if here > 5 inputs on which to save
+        }
+        if (keep == 5) { //if no if here > 5 inputs on which to save
             *rollsAmount = 0;
             return true;
-        }else{
+        } else {
             int arrayKeep[keep];
             for (int k = 0; k < keep; k++) {
                 setbuf(stdout, 0);
@@ -143,23 +143,17 @@ bool keepDice(int keep, int *rollsAmount) {
     }
 }
 
-/*POINT SUMMARY
- *  9s are 1 point
- *  10s are 2 points
- *  Jacks are 3 points
- *  Queens are 4 points
- *  Kings are 5 points
- *  Aces are 6 points*/
 void countPoints() {
     int roundPoints = 0;
     for (int i = 0; i < LENGTH; i++) {
         int tempSum = 0; // it resets on each and every re-roll
         //need to implement if else statement to check if some of the special hands are made on 1st throw
         /*if (rollsMade == 1) more points else fewer points*/
-        if (consecutiveChecker(playerRolls[currentPlayer],LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
-            tempSum += 20;
+        if (consecutiveChecker(playerRolls[currentPlayer],
+                               LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
+            tempSum += 20; // still scoring 20points/dice even if not consecutive
         } else if (grandeChecker(playerRolls[currentPlayer], LENGTH)) { // Works only with 5x Ace
-            tempSum += 50; // not working properly: 5x Ace != 250 !!!
+            tempSum += 50;
         } else if (playerRolls[currentPlayer][i] == 0) { // 9
             tempSum += 1;
         } else if (playerRolls[currentPlayer][i] == 1) { // 10
@@ -178,6 +172,8 @@ void countPoints() {
     }
     printf("Player %d made: %d points this round and total: %d points!\n", currentPlayer + 1,
            roundPoints, playerPoints[currentPlayer]);
+    /*when player1 wins displays: player 1 won points: 0
+     *when player2 wins display: player 0 won points: x amount*/
     //printf("Player %d got: %d points so far.\n", currentPlayer + 1, playerPoints[currentPlayer]);
 }
 
@@ -197,11 +193,9 @@ int getMax(const int arr[], int number) {
             max = arr[i];
     return max;
 }
-
+//this shit does not work
+//even if the dices are scrambled it still returns true...
 bool consecutiveChecker(int arr[], int number) {
-    if (number < 1)
-        return false;
-
     /* min number from the array */
     int min = getMin(arr, number);
 
@@ -210,29 +204,32 @@ bool consecutiveChecker(int arr[], int number) {
 
     /* if max - min + 1 = number,  only then check all elements */
     if (max - min + 1 == number) {
-        /* the temp arr saves the visit flag of elements
-           calloc used to initialize the elements as false*/
-        bool *visited = (bool *) calloc(number, sizeof(bool));
-        for (int i = 0; i < number; i++) {
-            /* If we see an element again, then return false */
-            if (visited[arr[i] - min] != false) {
-                return false;
+        int i;
+        for (i = 0; i < number; i++) {
+            int j;
+            if (arr[i] < 0) {
+                j = -arr[i] - min;
             } else {
-                visited[arr[i] - min] = true;
+                j = arr[i] - min;
             }
-            /* after first visit flag as such */
+            // if the value at index j is negative then there is repetition
+            if (arr[j] > 0) {
+                arr[j] = -arr[j];
+            } else {
+                return false;
+            }
         }
-        /* if all elements are unique return true */
+        /* if no negative values are present => the array has distinct values */
         return true;
     }
-    return false; // if (max - min  + 1 != number)
+    return false; // if (max - min  + 1 != n)
 }
 
 bool grandeChecker(const int isGrande[], int arrayLength) {
     const int checker = 5;
     for (int i = 0; i < arrayLength; i++) {
         if (checker == isGrande[i]) {
-
+            continue;
         } else {
             return false;
         }
