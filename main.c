@@ -42,6 +42,8 @@ bool grandeChecker(const int isGrande[], int arrayLength);
 
 bool checkGameFinished(int gameChoice);
 
+bool checkPoker(const int arrayPoker[]);
+
 int main() {
 
     srand((unsigned int) time(NULL));// starting here for more randomness
@@ -217,13 +219,13 @@ bool consecutiveChecker(int arr[], int number) {
             int j;
             if (arr[i] < 0) {
                 j = -arr[i] - min;
-            } else {
+            }else{
                 j = arr[i] - min;
             }
-            // if the value at index j is negative then there is repetition
-            if (arr[j] > 0) {
+            // if the value at index j is negative => there is repetition
+            if (arr[j] > 0){
                 arr[j] = -arr[j];
-            } else {
+            }else{
                 return false;
             }
         }
@@ -252,5 +254,14 @@ bool checkGameFinished(int gameChoice) {
             if (playerPoints[currentPlayer] >= 100) {
                 return true;
             }
+    }
+}
+
+bool checkPoker(const int arrayPoker[]){
+    int checker = 0;
+    for (int i = 0; i < LENGTH; i++) {
+        if(checker == arrayPoker[i]){
+            arrayPoker[i++];
+        }
     }
 }
