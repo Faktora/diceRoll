@@ -9,7 +9,7 @@
 int playerRolls[2][LENGTH];
 int playerPoints[2];
 bool roundEnd = false;
-int currentPlayer = 0;
+int currentPlayer = 1;
 
 
 //printing func so it does not just spit the numbers from the array
@@ -55,6 +55,7 @@ int main() {
     scanf("%d", &userGameChoice);
 
     while (!gameFinished) {
+        (currentPlayer == 0) ? (currentPlayer = 1) : (currentPlayer = 0);
         printf("Player %d rolls now! Good luck!\n", currentPlayer + 1);
         //grandeChecker(playerRolls[currentPlayer], LENGTH);
         setbuf(stdout, 0);
@@ -64,12 +65,11 @@ int main() {
         }
 
         gameFinished = checkGameFinished(userGameChoice);
-        (currentPlayer == 0) ? (currentPlayer = 1) : (currentPlayer = 0);
         setbuf(stdout, 0);
         printf("\n");
 
     }
-    printf("Player %d wins with: %d points!\n", currentPlayer, playerPoints[currentPlayer + 1]);
+    printf("Player %d wins with: %d points!\n", currentPlayer + 1, playerPoints[currentPlayer]);
     return 0;
 }
 
@@ -133,7 +133,7 @@ bool keepDice(int keep, int *rollsAmount) {
                     }
                 }
                 if (!isKeep) {
-                    playerRolls[currentPlayer][j] = rand() % 6;
+                    playerRolls[currentPlayer][j] = j + 1;
                 }
             }
         }
@@ -144,34 +144,42 @@ bool keepDice(int keep, int *rollsAmount) {
 }
 
 void countPoints() {
-    int roundPoints = 0;
-    for (int i = 0; i < LENGTH; i++) {
-        int tempSum = 0; // it resets on each and every re-roll
-        //need to implement if else statement to check if some of the special hands are made on 1st throw
-        /*if (rollsMade == 1) more points else fewer points*/
-        if (consecutiveChecker(playerRolls[currentPlayer],
-                               LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
-            tempSum += 20; // still scoring 20points/dice even if not consecutive
-        } else if (grandeChecker(playerRolls[currentPlayer], LENGTH)) { // Works only with 5x Ace
-            tempSum += 50;
-        } else if (playerRolls[currentPlayer][i] == 0) { // 9
-            tempSum += 1;
-        } else if (playerRolls[currentPlayer][i] == 1) { // 10
-            tempSum += 2;
-        } else if (playerRolls[currentPlayer][i] == 2) { // Jack
-            tempSum += 3;
-        } else if (playerRolls[currentPlayer][i] == 3) { // Queen
-            tempSum += 4;
-        } else if (playerRolls[currentPlayer][i] == 4) { // King
-            tempSum += 5;
-        } else if (playerRolls[currentPlayer][i] == 5) { // Ace
-            tempSum += 6;
-        }
-        roundPoints += tempSum;
-        playerPoints[currentPlayer] += tempSum;
+    int tempSum = 0;
+    bool pointSumationEnded = false;
+
+    if (consecutiveChecker(playerRolls[currentPlayer], LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
+        tempSum += 20; // still scoring 20points/dice even if not consecutive
+        pointSumationEnded = true;
+    } else if (grandeChecker(playerRolls[currentPlayer], LENGTH)) { // Works only with 5x Ace
+        tempSum += 50;
+        pointSumationEnded = true;
     }
+
+    if(!pointSumationEnded){
+        for (int i = 0; i < LENGTH; i++) {
+            // it resets on each and every re-roll
+            //need to implement if else statement to check if some of the special hands are made on 1st throw
+            /*if (rollsMade == 1) more points else fewer points*/
+            if (playerRolls[currentPlayer][i] == 0) { // 9
+                tempSum += 1;
+            } else if (playerRolls[currentPlayer][i] == 1) { // 10
+                tempSum += 2;
+            } else if (playerRolls[currentPlayer][i] == 2) { // Jack
+                tempSum += 3;
+            } else if (playerRolls[currentPlayer][i] == 3) { // Queen
+                tempSum += 4;
+            } else if (playerRolls[currentPlayer][i] == 4) { // King
+                tempSum += 5;
+            } else if (playerRolls[currentPlayer][i] == 5) { // Ace
+                tempSum += 6;
+            }
+        }
+    }
+
+    playerPoints[currentPlayer] += tempSum;
+
     printf("Player %d made: %d points this round and total: %d points!\n", currentPlayer + 1,
-           roundPoints, playerPoints[currentPlayer]);
+           tempSum, playerPoints[currentPlayer]);
     /*when player1 wins displays: player 1 won points: 0
      *when player2 wins display: player 0 won points: x amount*/
     //printf("Player %d got: %d points so far.\n", currentPlayer + 1, playerPoints[currentPlayer]);
