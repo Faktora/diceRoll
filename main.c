@@ -19,7 +19,7 @@ void translate(const int array[]);
 //this should be the func to save dice, rest of the dice should be rerolled (max 3 times)
 //if the player saves all, then his turn must end (later on)
 //boolean so it can keep track of numbers of rolls
-bool keepDice(int keep, int *amount_of_rolls, bool *has_rerolled);
+bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled);
 
 bool calculate_points(bool *has_rerolled);
 
@@ -65,7 +65,7 @@ int main() {
         bool isTurnEnded = false;
         bool has_rerolled = false;
         while (!isTurnEnded) {
-            isTurnEnded = keepDice(save_dice, &cnt_rolls, &has_rerolled);
+            isTurnEnded = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
         }
 
         gameFinished = is_game_finished(user_game_choice, &has_rerolled);
@@ -106,7 +106,7 @@ void translate(const int array[]) {
     printf("\n");//beauty print
 }
 
-bool keepDice(int keep, int *amount_of_rolls, bool *has_rerolled) {
+bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
     int cnt_dice;
     *amount_of_rolls += 1;
     if (*amount_of_rolls == 4) {
