@@ -38,7 +38,7 @@ bool is_poker();
 
 bool is_fullhouse();
 
-void roll_dice(int keep, int *array_keep[]);
+void roll_dice(int keep, int *array_keep);
 
 int main() {
     srand((unsigned int) time(NULL));// starting here for more randomness
@@ -121,7 +121,7 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
             setbuf(stdout, 0);
             printf("\nHow many dice to save?\n");
             scanf("%d", &keep);
-            int *arrayKeep[keep];
+            int *array_keep = malloc(LENGTH * sizeof(int));
             if (keep == 5) {
                 return true;
             }
@@ -132,10 +132,10 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
                 setbuf(stdout, 0);
                 printf("\nWhich one to keep?\n");
                 scanf("%d", &cnt_dice);
-                *arrayKeep[k] = cnt_dice;
+                array_keep[k] = cnt_dice;
             }
 
-            roll_dice(keep, arrayKeep);
+            roll_dice(keep, array_keep);
         }
         translate(player_throws[current_player]);
         return false;
@@ -328,11 +328,11 @@ void is_highest(const int array[]) {
     }
 }
 
-void roll_dice(int keep, int *array_keep[]) {
+void roll_dice(int keep, int *array_keep) {
     for (int j = 0; j < 5; j++) {//
         bool isKeep = false;
         for (int i = 0; i < keep; i++) {
-            if (*array_keep[i] == j) {
+            if (array_keep[i] == j) {
                 isKeep = true;
             }
         }
