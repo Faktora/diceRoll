@@ -46,13 +46,13 @@ int main() {
     int user_game_choice = 0;
     int round_counter = 1;
     int cnt_rolls = 0;
-    bool gameFinished = false;
+    bool game_finished = false;
 
     printf(" *** GAME MODES ***\n1) Normal point summary (100points)\n2) Table point summary\n");
     printf("\n");
     scanf("%d", &user_game_choice);
 
-    while (!gameFinished) {
+    while (!game_finished) {
         if (current_player == 0) {
             current_player = 1;
         } else {
@@ -68,7 +68,7 @@ int main() {
             isTurnEnded = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
         }
 
-        gameFinished = is_game_finished(user_game_choice, &has_rerolled);
+        game_finished = is_game_finished(user_game_choice, &has_rerolled);
         cnt_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
@@ -136,6 +136,7 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
             }
 
             roll_dice(keep, array_keep);
+            free(array_keep);
         }
         translate(player_throws[current_player]);
         return false;
@@ -271,6 +272,7 @@ bool is_game_finished(int gameChoice, bool *has_rerolled) {
         printf("Still under construction sorry!\n ");
         return true;
     }
+    return false;
 }
 
 bool is_poker() {
@@ -337,7 +339,7 @@ void roll_dice(int keep, int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = j + 1;// rand() % 6; to make them shuffle again
+            player_throws[current_player][j] = rand() % 6; //to make them shuffle again
         }
     }
 }
