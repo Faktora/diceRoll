@@ -7,8 +7,8 @@
 #define LENGTH 5
 
 int player_throws[2][LENGTH];
-int playerPoints[2];
-int currentPlayer = 1;
+int player_points[2];
+int current_player = 1;
 
 
 void is_highest(const int array[]);
@@ -19,57 +19,62 @@ void translate(const int array[]);
 //this should be the func to save dice, rest of the dice should be rerolled (max 3 times)
 //if the player saves all, then his turn must end (later on)
 //boolean so it can keep track of numbers of rolls
-bool keepDice(int keep, int *rollsAmount);
+bool keepDice(int keep, int *amount_of_rolls, bool *has_rerolled);
 
-void get_points();
+bool calculate_points(bool *has_rerolled);
 
 /* is_consecutive's little helpers */
-int is_min(const int playerThrows[], int arrayThrowsLength);//finds the min element in the array
-int is_max(const int playerThrows[], int arrayThrowsLength);//finds the max element in the array
+int is_min(const int player_throws[], int array_throws_length);//finds the min element in the array
+int is_max(const int player_throws[], int array_throws_length);//finds the max element in the array
 /* returns true if all array elements are consecutive
  * returns false if the array elements are not consecutive*/
-bool is_consecutive(int playerThrows[], int arrayThrowsLength);
+bool is_consecutive(int player_throws[], int array_throws_length);
 /*checks if all array elements are Aces or not*/
-bool is_grande(const int isGrande[], int arrayLength);
+bool is_grande(const int grande_array[], int array_length);
 
-bool is_game_finished(int gameChoice);
+bool is_game_finished(int gameChoice, bool *has_rerolled);
 
 bool is_poker();
 
 bool is_fullhouse();
 
+void roll_dice(int keep, int *array_keep[]);
+
 int main() {
     srand((unsigned int) time(NULL));// starting here for more randomness
-    int numToKeep = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
-    int rollsMade = 0;
-    int userGameChoice = 0;
+    int save_dice = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
+    int user_game_choice = 0;
+    int round_counter = 1;
+    int cnt_rolls = 0;
     bool gameFinished = false;
-    int roundCounter = 1;
 
     printf(" *** GAME MODES ***\n1) Normal point summary (100points)\n2) Table point summary\n");
     printf("\n");
-    scanf("%d", &userGameChoice);
+    scanf("%d", &user_game_choice);
 
     while (!gameFinished) {
-        if (currentPlayer == 0) {
-            currentPlayer = 1;
+        if (current_player == 0) {
+            current_player = 1;
         } else {
-            printf("Round %d ", roundCounter);
-            currentPlayer = 0;
-        }
-        printf("Player %d rolls now! Good luck!\n", currentPlayer + 1);
-        setbuf(stdout, 0);
-        bool isTurnEnded = false;
-        while (!isTurnEnded) {
-            isTurnEnded = keepDice(numToKeep, &rollsMade);
+            printf("Round %d ", round_counter);
+            current_player = 0;
         }
 
-        gameFinished = is_game_finished(userGameChoice);
+        printf("Player %d rolls now! Good luck!\n", current_player + 1);
+        setbuf(stdout, 0);
+        bool isTurnEnded = false;
+        bool has_rerolled = false;
+        while (!isTurnEnded) {
+            isTurnEnded = keepDice(save_dice, &cnt_rolls, &has_rerolled);
+        }
+
+        gameFinished = is_game_finished(user_game_choice, &has_rerolled);
+        cnt_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
 
     }
-    printf("Player %d wins with: %d points!\n", currentPlayer + 1, playerPoints[currentPlayer]);
+    printf("Player %d wins with: %d points!\n", current_player + 1, player_points[current_player]);
     return 0;
 }
 
@@ -101,95 +106,92 @@ void translate(const int array[]) {
     printf("\n");//beauty print
 }
 
-bool keepDice(int keep, int *rollsAmount) {
-    int currDice;
-    *rollsAmount += 1;
-    if (*rollsAmount == 4) {
-        *rollsAmount = 0;
+bool keepDice(int keep, int *amount_of_rolls, bool *has_rerolled) {
+    int cnt_dice;
+    *amount_of_rolls += 1;
+    if (*amount_of_rolls == 4) {
         return true;
     } else {
         // search
-        if (*rollsAmount != 1) {
+        if (*amount_of_rolls == 1) {
+            roll_dice(0, NULL);
+            translate(player_throws[current_player]);
+            return false;
+        } else {
             setbuf(stdout, 0);
             printf("\nHow many dice to save?\n");
             scanf("%d", &keep);
-        }
-        if (keep == 5) { //if no "if" here => player must do 5 inputs on which to save
-            *rollsAmount = 0;
-            return true;
-        } else {
-            int arrayKeep[keep];
+            int *arrayKeep[keep];
+            if (keep == 5) {
+                return true;
+            }
+
+            *has_rerolled = true;
+
             for (int k = 0; k < keep; k++) {
                 setbuf(stdout, 0);
                 printf("\nWhich one to keep?\n");
-                scanf("%d", &currDice);
-                arrayKeep[k] = currDice;
+                scanf("%d", &cnt_dice);
+                *arrayKeep[k] = cnt_dice;
             }
-            for (int j = 0; j < 5; j++) {//
-                bool isKeep = false;
-                for (int i = 0; i < keep; i++) {
-                    if (arrayKeep[i] == j) {
-                        isKeep = true;
-                    }
-                }
-                if (!isKeep) {
-                    player_throws[currentPlayer][j] = j + 1;// rand() % 6; to make them shuffle again
-                }
-            }
+
+            roll_dice(keep, arrayKeep);
         }
-        translate(player_throws[currentPlayer]);
+        translate(player_throws[current_player]);
         return false;
     }
 }
 
-void get_points(const int *rollsAmount) {
-    int tempSum = 0;
-    bool pointSumationEnded = false;
+bool calculate_points(bool *has_rerolled) {
+    int temp_sum = 0;
+    bool point_sumation_ended = false;
 
     //need to implement if else statement to check if some of the special hands are made on 1st throw
     /*if (rollsMade == 1) more points else fewer points*/
-    if (is_consecutive(player_throws[currentPlayer],
+    if (is_consecutive(player_throws[current_player],
                        LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
-        (*rollsAmount == 1) ? (tempSum += 25) : (tempSum += 20);
+        (*has_rerolled) ? (temp_sum += 20) : (temp_sum += 25);
         //tempSum += 20; // still scoring 20points/dice even if not consecutive
-        pointSumationEnded = true;
-    } else if (is_grande(player_throws[currentPlayer], LENGTH)) { // Works only with 5x Ace
-        (*rollsAmount == 1) ? (tempSum += 80) : (tempSum += 50);
+        point_sumation_ended = true;
+    } else if (is_grande(player_throws[current_player], LENGTH)) { // Works only with 5x Ace
+        (*has_rerolled) ? (temp_sum += 50) : (temp_sum += 80);
         //tempSum += 50;
-        pointSumationEnded = true;
-    } else if (is_fullhouse(player_throws[currentPlayer])) {
-        (*rollsAmount == 1) ? (tempSum += 35) : (tempSum += 30);
+        point_sumation_ended = true;
+    } else if (is_fullhouse(player_throws[current_player])) {
+        (*has_rerolled) ? (temp_sum += 30) : (temp_sum += 35);
         //tempSum += 30;
-        pointSumationEnded = true;
-    } else if (is_poker(player_throws[currentPlayer])) {
-        (*rollsAmount == 1) ? (tempSum += 45) : (tempSum += 40);
+        point_sumation_ended = true;
+    } else if (is_poker(player_throws[current_player])) {
+        (*has_rerolled) ? (temp_sum += 40) : (temp_sum += 45);
         //tempSum += 40;
-        pointSumationEnded = true;
+        point_sumation_ended = true;
     }
 
-    if (!pointSumationEnded) {
+    if (!point_sumation_ended) {
         for (int i = 0; i < LENGTH; i++) {
             // it resets on each and every re-roll
-            if (player_throws[currentPlayer][i] == 0) { // 9
-                tempSum += 1;
-            } else if (player_throws[currentPlayer][i] == 1) { // 10
-                tempSum += 2;
-            } else if (player_throws[currentPlayer][i] == 2) { // Jack
-                tempSum += 3;
-            } else if (player_throws[currentPlayer][i] == 3) { // Queen
-                tempSum += 4;
-            } else if (player_throws[currentPlayer][i] == 4) { // King
-                tempSum += 5;
-            } else if (player_throws[currentPlayer][i] == 5) { // Ace
-                tempSum += 6;
+            if (player_throws[current_player][i] == 0) { // 9
+                temp_sum += 1;
+            } else if (player_throws[current_player][i] == 1) { // 10
+                temp_sum += 2;
+            } else if (player_throws[current_player][i] == 2) { // Jack
+                temp_sum += 3;
+            } else if (player_throws[current_player][i] == 3) { // Queen
+                temp_sum += 4;
+            } else if (player_throws[current_player][i] == 4) { // King
+                temp_sum += 5;
+            } else if (player_throws[current_player][i] == 5) { // Ace
+                temp_sum += 6;
             }
         }
+        point_sumation_ended = true;
     }
 
-    playerPoints[currentPlayer] += tempSum;
+    player_points[current_player] += temp_sum;
 
-    printf("Player %d made: %d points this round and total: %d points!\n", currentPlayer + 1,
-           tempSum, playerPoints[currentPlayer]);
+    printf("Player %d made: %d points this round and total: %d points!\n", current_player + 1,
+           temp_sum, player_points[current_player]);
+    return point_sumation_ended;
     /*when player1 wins displays: player 1 won points: 0
      *when player2 wins display: player 0 won points: x amount*/
     //printf("Player %d got: %d points so far.\n", currentPlayer + 1, playerPoints[currentPlayer]);
@@ -197,47 +199,47 @@ void get_points(const int *rollsAmount) {
 
 
 //finding the smallest element in the array
-int is_min(const int playerThrows[], int arrayThrowsLength) {
-    int min = playerThrows[0];
-    for (int i = 0; i < arrayThrowsLength; i++) {
-        if (playerThrows[i] > min) {
-            min = playerThrows[i];
+int is_min(const int player_throws[], int array_throws_length) {
+    int min = player_throws[0];
+    for (int i = 0; i < array_throws_length; i++) {
+        if (player_throws[i] < min) {
+            min = player_throws[i];
         }
     }
     return min;
 }
 
 //finding the biggest element in the array
-int is_max(const int playerThrows[], int arrayThrowsLength) {
-    int max = playerThrows[0];
-    for (int i = 0; i < arrayThrowsLength; i++) {
-        if (playerThrows[i] < max) {
-            max = playerThrows[i];
+int is_max(const int player_throws[], int array_throws_length) {
+    int max = player_throws[0];
+    for (int i = 0; i < array_throws_length; i++) {
+        if (player_throws[i] > max) {
+            max = player_throws[i];
         }
     }
     return max;
 }
 
-bool is_consecutive(int playerThrows[], int arrayThrowsLength) {
+bool is_consecutive(int player_throws[], int array_throws_length) {
     //get the minimum number from the array
-    int min = is_min(playerThrows, arrayThrowsLength);
+    int min = is_min(player_throws, array_throws_length);
 
     //get the maximum number from the array
-    int max = is_max(playerThrows, arrayThrowsLength);
+    int max = is_max(player_throws, array_throws_length);
 
     //if max - min + 1 == arrayThrowsLength, only then check all elements
-    if (max - min + 1 == arrayThrowsLength) {
+    if (max - min + 1 == array_throws_length) {
         int indexOne;
-        for (indexOne = 0; indexOne < arrayThrowsLength; indexOne++) {
+        for (indexOne = 0; indexOne < array_throws_length; indexOne++) {
             int indexTwo;
-            if (playerThrows[indexOne] < 0) {
-                indexTwo = -playerThrows[indexOne] - min;
+            if (player_throws[indexOne] < 0) {
+                indexTwo = -player_throws[indexOne] - min;
             } else {
-                indexTwo = playerThrows[indexOne] - min;
+                indexTwo = player_throws[indexOne] - min;
             }
             //if the value at indexTwo is negative => there is repetition
-            if (playerThrows[indexTwo] > 0) {
-                playerThrows[indexTwo] = -playerThrows[indexTwo];
+            if (player_throws[indexTwo] > 0) {
+                player_throws[indexTwo] = -player_throws[indexTwo];
             } else {
                 return false;
             }
@@ -249,10 +251,10 @@ bool is_consecutive(int playerThrows[], int arrayThrowsLength) {
     return false;
 }
 
-bool is_grande(const int isGrande[], int arrayLength) {
+bool is_grande(const int grande_array[], int array_length) {
     const int checker = 5;
-    for (int i = 0; i < arrayLength; i++) {
-        if (checker == isGrande[i]) {
+    for (int i = 0; i < array_length; i++) {
+        if (checker == grande_array[i]) {
             continue;
         } else {
             return false;
@@ -261,56 +263,49 @@ bool is_grande(const int isGrande[], int arrayLength) {
     return true;
 }
 
-bool is_game_finished(int gameChoice) {
+bool is_game_finished(int gameChoice, bool *has_rerolled) {
     if (gameChoice == 1) {
-        get_points(/*const int *rollsAmount*/);
-        (playerPoints[currentPlayer] >= 100) ? (true) : (false);
+        calculate_points(has_rerolled);
+        return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (gameChoice == 2) {
         printf("Still under construction sorry!\n ");
         return true;
     }
-    /*switch (gameChoice) {
-        case 1:
-            get_points(const int *rollsAmount);// this motherfucker is fucking up my work now :/
-            if (playerPoints[currentPlayer] >= 100) {
-                return true;
-            }
-    }*/
 }
 
 bool is_poker() {
-    bool firstPossibility, secondPossibility;
-    is_highest(player_throws[currentPlayer]);
+    bool first_possibility, second_possibility;
+    is_highest(player_throws[current_player]);
 
-    firstPossibility =
-            player_throws[currentPlayer][0] == player_throws[currentPlayer][1] &&
-            player_throws[currentPlayer][1] == player_throws[currentPlayer][2] &&
-            player_throws[currentPlayer][2] == player_throws[currentPlayer][3];
+    first_possibility =
+            player_throws[current_player][0] == player_throws[current_player][1] &&
+            player_throws[current_player][1] == player_throws[current_player][2] &&
+            player_throws[current_player][2] == player_throws[current_player][3];
 
-    secondPossibility =
-            player_throws[currentPlayer][1] == player_throws[currentPlayer][2] &&
-            player_throws[currentPlayer][2] == player_throws[currentPlayer][3] &&
-            player_throws[currentPlayer][3] == player_throws[currentPlayer][4];
+    second_possibility =
+            player_throws[current_player][1] == player_throws[current_player][2] &&
+            player_throws[current_player][2] == player_throws[current_player][3] &&
+            player_throws[current_player][3] == player_throws[current_player][4];
 
-    return (firstPossibility || secondPossibility);
+    return (first_possibility || second_possibility);
 }
 
 
 bool is_fullhouse() {
-    bool firstPossibility, secondPossibility;
-    is_highest(player_throws[currentPlayer]);
+    bool first_possibility, second_possibility;
+    is_highest(player_throws[current_player]);
 
-    firstPossibility =
-            player_throws[currentPlayer][0] == player_throws[currentPlayer][1] &&
-            player_throws[currentPlayer][1] == player_throws[currentPlayer][2] &&
-            player_throws[currentPlayer][3] == player_throws[currentPlayer][4];
+    first_possibility =
+            player_throws[current_player][0] == player_throws[current_player][1] &&
+            player_throws[current_player][1] == player_throws[current_player][2] &&
+            player_throws[current_player][3] == player_throws[current_player][4];
 
-    secondPossibility =
-            player_throws[currentPlayer][0] == player_throws[currentPlayer][1] &&
-            player_throws[currentPlayer][2] == player_throws[currentPlayer][3] &&
-            player_throws[currentPlayer][3] == player_throws[currentPlayer][4];
+    second_possibility =
+            player_throws[current_player][0] == player_throws[current_player][1] &&
+            player_throws[current_player][2] == player_throws[current_player][3] &&
+            player_throws[current_player][3] == player_throws[current_player][4];
 
-    return (firstPossibility || secondPossibility);
+    return (first_possibility || second_possibility);
 }
 
 //sorting array by power
@@ -322,13 +317,27 @@ void is_highest(const int array[]) {
         minimum_j = i;   // take that array[i] is the minimum
 
         for (j = i + 1; j < LENGTH; j++) {
-            if (player_throws[currentPlayer][j] < player_throws[currentPlayer][minimum_j]) {
+            if (player_throws[current_player][j] < player_throws[current_player][minimum_j]) {
                 minimum_j = j;    // found smaller => updating minimum_j with new element
             }
         }
         // swapping the elements around so they can be sorted by power
-        int help = player_throws[currentPlayer][i];// temporary value to help with swapping
-        player_throws[currentPlayer][i] = player_throws[currentPlayer][minimum_j];
-        player_throws[currentPlayer][minimum_j] = help;
+        int help = player_throws[current_player][i];// temporary value to help with swapping
+        player_throws[current_player][i] = player_throws[current_player][minimum_j];
+        player_throws[current_player][minimum_j] = help;
+    }
+}
+
+void roll_dice(int keep, int *array_keep[]) {
+    for (int j = 0; j < 5; j++) {//
+        bool isKeep = false;
+        for (int i = 0; i < keep; i++) {
+            if (*array_keep[i] == j) {
+                isKeep = true;
+            }
+        }
+        if (!isKeep) {
+            player_throws[current_player][j] = j + 1;// rand() % 6; to make them shuffle again
+        }
     }
 }
