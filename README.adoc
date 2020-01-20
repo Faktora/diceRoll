@@ -41,20 +41,22 @@ In the table only one row value can be written per round.
 +
 .Example of a counting table
 [options="header,footer"]
-|===
-| Deck       | Player 1 | Player 2
-| 9s         |  |
-| 10s        |  |
-| Jacks      |  |
-| Queens     |  |
-| Kings      |  |
-| Aces       |  |
-| Straight   |  |
-| Full House |  |
-| Poker      |  |
-| Grande     |  |
-| **Sum**    |  |
-|===
+|==================================|
+| Deck       | Player 1 | Player 2 |
+|============|==========|==========|
+| 9s        0|  	|	   |
+| 10s       1|  	|	   |
+| Jacks     2|  	|	   |
+| Queens    3|  	|	   |
+| Kings     4|  	|	   |
+| Aces      5|  	|	   |
+| Straight  6|  	|	   |
+| Full House7|  	|	   |
+| Poker     8|  	|	   |
+| Grande    9|  	|	   |
+|==================================|
+| **Sum**  10|  	|	   |
+|==================================|
 
   . **Task (20 points)**
 +

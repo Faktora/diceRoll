@@ -1,39 +1,42 @@
-int playerRolls[2][LENGTH];
-int playerPoints[2];
-int currentPlayer = 1;
+/*takes the array and sorts it by power in search for poker and full house*/
+void is_highest(const int array[]);
 
-
-void sortByPower(const int array[]);
-//printing func so it does not just spit the numbers from the array
+/*function used to print out the rolled dices*/
 void translate(const int array[]);
 
-//this should be the func to save dice, rest of the dice should be rerolled (max 3 times)
-//if the player saves all, then his turn must end (later on)
-//boolean so it can keep track of numbers of rolls
-bool keepDice(int keep, int *rollsAmount);
+/*function takes the dice we keep, how many rolls did the player do and if he re-rolled already
+ * if it is first roll, we call function roll and then asks the user how many and which dices he wants to save */
+bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled);
 
-//implement a pointing system :
-/*POINT SUMMARY
- *  9s are 1 point
- *  10s are 2 points
- *  Jacks are 3 points
- *  Queens are 4 points
- *  Kings are 5 points
- *  Aces are 6 points*/
-void countPoints(int *rollsAmount);
+/*function using the re-rolled boolean to check for extra points
+ * just prints and then saves the points each player made*/
+bool calculate_points(bool *has_rerolled);
 
-/* these funcs thelp the main func that
- * checks if the array is consecutive*/
-int getMin(const int arr[], int number);//finds the min element in the array
-int getMax(const int arr[], int number);//finds the max element in the array
-/* returns true if all array elements are consecutive
- * returns false if the array elements are not consecutive*/
-bool consecutiveChecker(int arrCons[], int number);
-/*checks if all array elements are Aces or not*/
-bool grandeChecker(const int isGrande[], int arrayLength);
+/* helping functions for is_consecutive, they find the min and max number in the array player_throws */
+int is_min(const int player_throws[], int array_throws_length);//finds the min element in the array
+int is_max(const int player_throws[], int array_throws_length);//finds the max element in the array
 
-bool checkGameFinished(int gameChoice);
+/*func takes array with player_throws and the length of it
+ * calls the is_max and is_min (check their comments for explanation)
+ * after getting the min and max goes thru player_throws to find if all numbers are consecutive*/
+bool is_consecutive(int player_throws[], int array_throws_length);
 
-bool pokerChecker();
+/*takes the array with player throws and the length of it as arguments
+ * then goes thru the array looking if all the elements are == 5 (Aces)*/
+bool is_grande(const int grande_array[], int array_length);
 
-bool fullHouseChecker();
+/*game switching for other mods to come takes user input game_choice and whether the player has rerolled
+ * used to call the game type and its corresponding pointing system*/
+bool is_game_finished(int game_choice, bool *has_rerolled);
+
+/*func with no arguments, gets called by is_highest to check if there is poker in the current throw*/
+bool is_poker();
+
+/*func with no arguments, gets called by is_highest to check if there is fullhouse in the current throw*/
+bool is_fullhouse();
+
+/*function using keep(amount of dices to keep) and array_keep (array with the elements the user wants to save)
+ * then re-rolls the rest of the dice that are not supposed to be kept*/
+void roll_dice(int keep, int *array_keep);
+
+//void table_point_summary(int pointing_table[]); still working on it
