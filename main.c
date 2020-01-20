@@ -4,7 +4,7 @@
 #include <stdbool.h>
 //#include "function.h"
 
-#define LENGTH 5
+#define LENGTH 5 //length five because we throw 5 dices
 
 int player_throws[2][LENGTH];
 int player_points[2];
@@ -32,7 +32,7 @@ bool is_consecutive(int player_throws[], int array_throws_length);
 /*checks if all array elements are Aces or not*/
 bool is_grande(const int grande_array[], int array_length);
 
-bool is_game_finished(int gameChoice, bool *has_rerolled);
+bool is_game_finished(int gameChoice, bool *has_rerolled, int pointing_table[]);
 
 bool is_poker();
 
@@ -40,12 +40,15 @@ bool is_fullhouse();
 
 void roll_dice(int keep, int *array_keep);
 
+void table_point_summary(int pointing_table[]);
+
 int main() {
     srand((unsigned int) time(NULL));// starting here for more randomness
     int save_dice = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
     int user_game_choice = 0;
     int round_counter = 1;
     int cnt_rolls = 0;
+    int pointing_table[2][10];
     bool game_finished = false;
 
     printf(" *** GAME MODES ***\n1) Normal point summary (100points)\n2) Table point summary\n");
@@ -62,13 +65,13 @@ int main() {
 
         printf("Player %d rolls now! Good luck!\n", current_player + 1);
         setbuf(stdout, 0);
-        bool isTurnEnded = false;
+        bool is_turn_ended = false;
         bool has_rerolled = false;
-        while (!isTurnEnded) {
-            isTurnEnded = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
+        while (!is_turn_ended) {
+            is_turn_ended = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
         }
 
-        game_finished = is_game_finished(user_game_choice, &has_rerolled);
+        game_finished = is_game_finished(user_game_choice, &has_rerolled, &pointing_table);
         cnt_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
@@ -264,13 +267,14 @@ bool is_grande(const int grande_array[], int array_length) {
     return true;
 }
 
-bool is_game_finished(int gameChoice, bool *has_rerolled) {
+bool is_game_finished(int gameChoice, bool *has_rerolled, int pointing_table[]) {
     if (gameChoice == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (gameChoice == 2) {
         printf("Still under construction sorry!\n ");
-        return true;
+        table_point_summary(pointing_table);
+        return ((player_points[current_player] >= 100) ? (true) : (false));
     }
     return false;
 }
@@ -343,3 +347,18 @@ void roll_dice(int keep, int *array_keep) {
         }
     }
 }
+
+void table_point_summary(int pointing_table[]){
+    //*(pointing_table+1);
+}
+
+/*bez promeni na roll dice i keepdice
+ * promeni v tochkuvaneto/seifane
+ * calc points nova funkciq da pishe v tablicata
+ * spec sluchai 1vo kakto calc_points
+ * ako ima pitane za safe
+ * [2][10]
+ * for za array
+ * temp za broq ednakvi rolla v tova hvurlqne
+ * end turn nakraq
+ * */
