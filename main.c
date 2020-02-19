@@ -16,8 +16,8 @@ int main() {
     int save_dice = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
     int user_game_choice = 0;
     int round_counter = 1;
-    int cnt_rolls = 0;
-    int arrayPoints[12][2] = {0};
+    int count_rolls = 0;
+    int array_points[12][2] = {0};
     //int pointing_table[2][10]; used for the 2nd game choice, which is still not done.
     bool game_finished = false;
 
@@ -34,16 +34,16 @@ int main() {
             current_player = 0;
         }
 
-        printf("Player %d Roll %d Good luck!\n", current_player + 1, cnt_rolls + 1);
+        printf("Player %d Roll %d Good luck!\n", current_player + 1, count_rolls + 1);
         setbuf(stdout, 0);
         bool is_turn_ended = false;
         bool has_rerolled = false;
         while (!is_turn_ended) {
-            is_turn_ended = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
+            is_turn_ended = keep_dice(save_dice, &count_rolls, &has_rerolled);
         }
 
-        game_finished = is_game_finished(user_game_choice, &has_rerolled, arrayPoints);
-        cnt_rolls = 0;
+        game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points);
+        count_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
 
@@ -165,47 +165,47 @@ bool calculate_points(bool *has_rerolled) {
 
 
 //finding the smallest element in the array
-int is_min(const int player_throws[], int array_throws_length) {
-    int min = player_throws[0];
+int is_min(const int player_throws_min[], int array_throws_length) {
+    int min = player_throws_min[0];
     for (int i = 0; i < array_throws_length; i++) {
-        if (player_throws[i] < min) {
-            min = player_throws[i];
+        if (player_throws_min[i] < min) {
+            min = player_throws_min[i];
         }
     }
     return min;
 }
 
 //finding the biggest element in the array
-int is_max(const int player_throws[], int array_throws_length) {
-    int max = player_throws[0];
+int is_max(const int player_throws_max[], int array_throws_length) {
+    int max = player_throws_max[0];
     for (int i = 0; i < array_throws_length; i++) {
-        if (player_throws[i] > max) {
-            max = player_throws[i];
+        if (player_throws_max[i] > max) {
+            max = player_throws_max[i];
         }
     }
     return max;
 }
 
-bool is_consecutive(int player_throws[], int array_throws_length) {
+bool is_consecutive(int player_throws_consecutive[], int array_throws_length) {
     //get the minimum number from the array
-    int min = is_min(player_throws, array_throws_length);
+    int min = is_min(player_throws_consecutive, array_throws_length);
 
     //get the maximum number from the array
-    int max = is_max(player_throws, array_throws_length);
+    int max = is_max(player_throws_consecutive, array_throws_length);
 
     //if max - min + 1 == arrayThrowsLength, only then check all elements
     if (max - min + 1 == array_throws_length) {
         int indexOne;
         for (indexOne = 0; indexOne < array_throws_length; indexOne++) {
             int indexTwo;
-            if (player_throws[indexOne] < 0) {
-                indexTwo = -player_throws[indexOne] - min;
+            if (player_throws_consecutive[indexOne] < 0) {
+                indexTwo = -player_throws_consecutive[indexOne] - min;
             } else {
-                indexTwo = player_throws[indexOne] - min;
+                indexTwo = player_throws_consecutive[indexOne] - min;
             }
             //if the value at indexTwo is negative => there is repetition
-            if (player_throws[indexTwo] > 0) {
-                player_throws[indexTwo] = -player_throws[indexTwo];
+            if (player_throws_consecutive[indexTwo] > 0) {
+                player_throws_consecutive[indexTwo] = -player_throws_consecutive[indexTwo];
             } else {
                 return false;
             }
@@ -229,14 +229,14 @@ bool is_grande(const int grande_array[], int array_length) {
     return true;
 }
 
-bool is_game_finished(int game_choice, bool *has_rerolled, int arrayPoints[][2]) {
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]) {
     if (game_choice == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_choice == 2) {
         //printf("Still under construction. Sorry!\n ");
         calculate_points(has_rerolled);
-        table_point_summary(arrayPoints);
+        table_point_summary(array_points);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     }
     return false;
@@ -310,12 +310,13 @@ void roll_dice(int keep, int *array_keep) {
     }
 }
 
-void table_point_summary(int arrayPoints[][2]){
+void table_point_summary(int array_points[][2]){
+    array_points[10][current_player] = player_points[current_player];
     //Scoring table
-    char arrayFirstRow[3][10] = {"Deck", "Player 1", "Player 2"};
-    char arrayStuff[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
+    char array_first_row[3][10] = {"Deck", "Player 1", "Player 2"};
+    char array_cards_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
                                "Straight", "Full House", "Poker", "Grande", "Sum"};
-    /*arrayPoints[12][2] = {{0,                0},  //9s
+    /*array_points[12][2] = {{0,                0},  //9s
                         {0,                0},  //10s
                         {0,                0},  //Jacks
                         {0,                0},  //Queens
@@ -329,14 +330,14 @@ void table_point_summary(int arrayPoints[][2]){
     //printing the scoring table
     printf("\n=========================================\n"); //41*=
     for (int i = 0; i < 3; i++) {
-        printf("| %10s ", arrayFirstRow[i]);
+        printf("| %10s ", array_first_row[i]);
     }
     printf(" |");
     printf("\n=========================================\n"); //41*=
     for (int i = 0; i < 11; i++) {
-        printf("| %10s ", arrayStuff[i]);
+        printf("| %10s ", array_cards_column[i]);
         for (int j = 0; j < 2 ; j++) {
-            printf("| %10d ", arrayPoints[i][j]);
+            printf("| %10d ", array_points[i][j]);
         }
         printf(" |");
         printf("\n=========================================\n"); //41*=
