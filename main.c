@@ -17,10 +17,11 @@ int main() {
     int user_game_choice = 0;
     int round_counter = 1;
     int cnt_rolls = 0;
+    int arrayPoints[12][2] = {0};
     //int pointing_table[2][10]; used for the 2nd game choice, which is still not done.
     bool game_finished = false;
 
-    printf(" *** GAME MODES ***\n1) Normal point summary (100points)\n2) Table point summary\n");
+    printf(" *** GAME MODES ***\n1) Normal point summary (100 Points)\n2) Table point summary (100 Points)\n");
     printf("\n");
     scanf("%d", &user_game_choice);
 
@@ -41,7 +42,7 @@ int main() {
             is_turn_ended = keep_dice(save_dice, &cnt_rolls, &has_rerolled);
         }
 
-        game_finished = is_game_finished(user_game_choice, &has_rerolled);
+        game_finished = is_game_finished(user_game_choice, &has_rerolled, arrayPoints);
         cnt_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
@@ -91,7 +92,7 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
             return false;
         } else {
             setbuf(stdout, 0);
-            printf("\nHow many dice to save?\n(Numbers between 0[none] and 5[all and end turn], enter to confirm)\n");
+            printf("\nHow many dice to save?\n(Numbers between 0 [none] and 5 [all, end turn], enter to confirm)\n");
             scanf("%d", &keep);
             int *array_keep = malloc(LENGTH * sizeof(int));
             if (keep == 5) {
@@ -228,14 +229,15 @@ bool is_grande(const int grande_array[], int array_length) {
     return true;
 }
 
-bool is_game_finished(int game_choice, bool *has_rerolled) {
+bool is_game_finished(int game_choice, bool *has_rerolled, int arrayPoints[][2]) {
     if (game_choice == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_choice == 2) {
-        printf("Still under construction. Sorry!\n ");
-        /*table_point_summary(pointing_table);
-        return ((player_points[current_player] >= 100) ? (true) : (false));*/
+        //printf("Still under construction. Sorry!\n ");
+        calculate_points(has_rerolled);
+        table_point_summary(arrayPoints);
+        return ((player_points[current_player] >= 100) ? (true) : (false));
     }
     return false;
 }
@@ -256,7 +258,6 @@ bool is_poker() {
 
     return (first_possibility || second_possibility);
 }
-
 
 bool is_fullhouse() {
     bool first_possibility, second_possibility;
@@ -308,8 +309,36 @@ void roll_dice(int keep, int *array_keep) {
         }
     }
 }
-/*
-void table_point_summary(int pointing_table[]){
 
+void table_point_summary(int arrayPoints[][2]){
+    //Scoring table
+    char arrayFirstRow[3][10] = {"Deck", "Player 1", "Player 2"};
+    char arrayStuff[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
+                               "Straight", "Full House", "Poker", "Grande", "Sum"};
+    /*arrayPoints[12][2] = {{0,                0},  //9s
+                        {0,                0},  //10s
+                        {0,                0},  //Jacks
+                        {0,                0},  //Queens
+                        {0,                0},  //Kings
+                        {0,                0},  //Aces
+                        {0,                0},  //Straight
+                        {0,                0},  //Full House
+                        {0,                0},  //Poker
+                        {0,                0},  //Grande
+                        {0,                0}}; //Sum*/
+    //printing the scoring table
+    printf("\n=========================================\n"); //41*=
+    for (int i = 0; i < 3; i++) {
+        printf("| %10s ", arrayFirstRow[i]);
+    }
+    printf(" |");
+    printf("\n=========================================\n"); //41*=
+    for (int i = 0; i < 11; i++) {
+        printf("| %10s ", arrayStuff[i]);
+        for (int j = 0; j < 2 ; j++) {
+            printf("| %10d ", arrayPoints[i][j]);
+        }
+        printf(" |");
+        printf("\n=========================================\n"); //41*=
+    }
 }
-*/

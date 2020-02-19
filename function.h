@@ -27,7 +27,7 @@ bool is_grande(const int grande_array[], int array_length);
 
 /*game switching for other mods to come takes user input game_choice and whether the player has rerolled
  * used to call the game type and its corresponding pointing system*/
-bool is_game_finished(int game_choice, bool *has_rerolled);
+bool is_game_finished(int game_choice, bool *has_rerolled, int arrayPoints[][2]);
 
 /*func with no arguments, gets called by is_highest to check if there is poker in the current throw*/
 bool is_poker();
@@ -39,4 +39,4 @@ bool is_fullhouse();
  * then re-rolls the rest of the dice that are not supposed to be kept*/
 void roll_dice(int keep, int *array_keep);
 
-//void table_point_summary(int pointing_table[]); still working on it
+void table_point_summary(int arrayPoints[][2]);
