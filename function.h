@@ -25,15 +25,15 @@ bool is_consecutive(int player_throws[], int array_throws_length);
  * then goes thru the array looking if all the elements are == 5 (Aces)*/
 bool is_grande(const int grande_array[], int array_length);
 
-/*game switching for other mods to come takes user input game_choice and whether the player has rerolled
- * used to call the game type and its corresponding pointing system*/
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]);
-
 /*func with no arguments, gets called by is_highest to check if there is poker in the current throw*/
 bool is_poker();
 
-/*func with no arguments, gets called by is_highest to check if there is fullhouse in the current throw*/
+/*func with no arguments, gets called by is_highest to check if there is full house in the current throw*/
 bool is_fullhouse();
+
+/*game switching for other mods to come takes user input game_choice and whether the player has rerolled
+* used to call the game type and its corresponding pointing system*/
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]);
 
 /*function using keep(amount of dices to keep) and array_keep (array with the elements the user wants to save)
  * then re-rolls the rest of the dice that are not supposed to be kept*/

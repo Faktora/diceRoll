@@ -311,23 +311,28 @@ void roll_dice(int keep, int *array_keep) {
 }
 
 void table_point_summary(int array_points[][2]){
-    array_points[10][current_player] = player_points[current_player];
+    //array_points[10][current_player] = player_points[current_player];// saving in the sum position
+    /*int current_sum = 0;
+    for (int n = 0; n < 10; n++) {
+        calculate_points(*has_rerolled)
+    }*/
     //Scoring table
     char array_first_row[3][10] = {"Deck", "Player 1", "Player 2"};
     char array_cards_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
                                "Straight", "Full House", "Poker", "Grande", "Sum"};
-    /*array_points[12][2] = {{0,                0},  //9s
-                        {0,                0},  //10s
-                        {0,                0},  //Jacks
-                        {0,                0},  //Queens
-                        {0,                0},  //Kings
-                        {0,                0},  //Aces
-                        {0,                0},  //Straight
-                        {0,                0},  //Full House
-                        {0,                0},  //Poker
-                        {0,                0},  //Grande
-                        {0,                0}}; //Sum*/
-    //printing the scoring table
+    /*array_points[12][2] = {{0,                0},  //9s       position 0
+                        {0,                0},  //10s           position 1
+                        {0,                0},  //Jacks         position 2
+                        {0,                0},  //Queens        position 3
+                        {0,                0},  //Kings         position 4
+                        {0,                0},  //Aces          position 5
+                        {0,                0},  //Straight      position 6
+                        {0,                0},  //Full House    position 7
+                        {0,                0},  //Poker         position 8
+                        {0,                0},  //Grande        position 9
+                        {0,                0}}; //Sum           position 10
+     */
+            //printing the scoring table
     printf("\n=========================================\n"); //41*=
     for (int i = 0; i < 3; i++) {
         printf("| %10s ", array_first_row[i]);
