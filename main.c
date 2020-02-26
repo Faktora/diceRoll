@@ -3,8 +3,32 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "function.h"
+#include "base_functions.h"
+#include "point_computing.h"
 
 #define LENGTH 5 //length five because we throw 5 dices
+
+/// \brief
+///
+/// the main() - saves most of the variables used by the game
+/// and calls each and every function inside this .c file
+/// function definitions are external to reduce clutter in main.c
+/// and for better overview of them
+///
+/// \param LENGTH - how many dices are used in the game
+/// \param player_throws - saves the current player's dice trow combination, and shows it to him
+/// \param player_points - saves player's points (later on displayed as sum)
+/// \param current_player - shows which player turn is, and displays it when needed (start of each round)
+/// \param save_dice - takes user input on dices he choose to save, rest gets re-rolled
+/// \param user_game_choice - saves what the user input at the start for game choice
+/// \param round_counter - counts game rounds, then used to display to show players the current round
+/// \param count_rolls - follows how many rolls did the player have this round, resets every round
+/// \param array_points - saves each players points in his own column
+/// \param game_finished - boolean to check if any of the game modes have finished to end the game
+/// \param is_turn_ended - boolean to checking if players turn has ended
+/// \param has_rerolled - boolean to check if the player has re-rolled, used in throws and pointing
+/// system to reward players greatly for lucky first throws
+
 
 int player_throws[2][LENGTH];
 int player_points[2];
