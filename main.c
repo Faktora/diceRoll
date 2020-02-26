@@ -229,19 +229,6 @@ bool is_grande(const int grande_array[], int array_length) {
     return true;
 }
 
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]) {
-    if (game_choice == 1) {
-        calculate_points(has_rerolled);
-        return ((player_points[current_player] >= 100) ? (true) : (false));
-    } else if (game_choice == 2) {
-        //printf("Still under construction. Sorry!\n ");
-        calculate_points(has_rerolled);
-        table_point_summary(array_points);
-        return ((player_points[current_player] >= 100) ? (true) : (false));
-    }
-    return false;
-}
-
 bool is_poker() {
     bool first_possibility, second_possibility;
     is_highest(player_throws[current_player]);
@@ -289,10 +276,10 @@ void is_highest(const int array[]) {
                 minimum_j = j;    // found smaller => updating minimum_j with new element
             }
         }
-        // swapping the elements around so they can be sorted by power
-        int help = player_throws[current_player][i];// temporary value to help with swapping
+        // sorting elements by power
+        int temp_help = player_throws[current_player][i];// temporary value to help with swapping
         player_throws[current_player][i] = player_throws[current_player][minimum_j];
-        player_throws[current_player][minimum_j] = help;
+        player_throws[current_player][minimum_j] = temp_help;
     }
 }
 
@@ -310,15 +297,24 @@ void roll_dice(int keep, int *array_keep) {
     }
 }
 
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]) {
+    if (game_choice == 1) {
+        calculate_points(has_rerolled);
+        return ((player_points[current_player] >= 100) ? (true) : (false));
+    } else if (game_choice == 2) {
+        calculate_points(has_rerolled);
+        table_point_summary(array_points);
+        return ((player_points[current_player] >= 100) ? (true) : (false));
+    }
+    return false;
+}
+
 void table_point_summary(int array_points[][2]){
-    //array_points[10][current_player] = player_points[current_player];// saving in the sum position
-    /*int current_sum = 0;
-    for (int n = 0; n < 10; n++) {
-        calculate_points(*has_rerolled)
-    }*/
+    bool already_saved = false; //checking if the player have saved to the table already
+
     //Scoring table
     char array_first_row[3][10] = {"Deck", "Player 1", "Player 2"};
-    char array_cards_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
+    char array_rolls_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
                                "Straight", "Full House", "Poker", "Grande", "Sum"};
     /*array_points[12][2] = {{0,                0},  //9s       position 0
                         {0,                0},  //10s           position 1
@@ -332,19 +328,31 @@ void table_point_summary(int array_points[][2]){
                         {0,                0},  //Grande        position 9
                         {0,                0}}; //Sum           position 10
      */
+
+    // just 1000 loops printing the beautiful table
+    printf("\n");
             //printing the scoring table
-    printf("\n=========================================\n"); //41*=
+    for (int k = 0; k < 41; k++) {
+        printf("=");
+    }
+    printf("\n");
     for (int i = 0; i < 3; i++) {
         printf("| %10s ", array_first_row[i]);
     }
-    printf(" |");
-    printf("\n=========================================\n"); //41*=
+    printf(" |\n");
+    for (int k = 0; k < 41; k++) {
+        printf("=");
+    }
+    printf("\n");
     for (int i = 0; i < 11; i++) {
-        printf("| %10s ", array_cards_column[i]);
+        printf("| %10s ", array_rolls_column[i]);
         for (int j = 0; j < 2 ; j++) {
             printf("| %10d ", array_points[i][j]);
         }
-        printf(" |");
-        printf("\n=========================================\n"); //41*=
+        printf(" |\n");
+        for (int k = 0; k < 41; k++) {
+            printf("=");
+        }
+        printf("\n");
     }
 }
