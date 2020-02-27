@@ -2,6 +2,17 @@
 // Created by Faktora on 26-Feb-20.
 //
 
+/// \brief universal game functions used in all of the gaming modes
+///
+/// \param roll_dice - takes int keep for amount of dices to keep and array for the chosen dices to save to, also
+/// re-rolls all of the unsaved dices
+/// \param translate - takes the array with current throws and prints it to a understandable for the user text
+/// \param keep_dice - takes the amount of dices to keep, how many rolls have the user already made and a boolean
+/// if rolls = 3, no more re-rolls, if has_rerolled = true, lesser points for combination roll
+/// \param calculate_points - takes one boolean argument to check for re-rolls, sums player points
+/// \param is_game_finished - takes players game choice, if he re-rolled and players array with points,
+/// at the end of each round checks if the player reached the needed amount of points to win
+
 #ifndef POKERDICE_BASE_FUNCTIONS_H
 #define POKERDICE_BASE_FUNCTIONS_H
 

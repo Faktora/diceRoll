@@ -8,9 +8,7 @@
 
 #define LENGTH 5 //length five because we throw 5 dices
 
-/// \brief
-///
-/// the main() - saves most of the variables used by the game
+/// \brief the main() - saves most of the variables used by the game
 /// and calls each and every function inside this .c file
 /// function definitions are external to reduce clutter in main.c
 /// and for better overview of them
