@@ -7,12 +7,16 @@
 #ifndef POKERDICE_TABLE_POINT_SUM_H
 #define POKERDICE_TABLE_POINT_SUM_H
 
-/// \fn table_point_summary - takes 2 dimensional array as argument, it saves each players point's in their own column
+/// \fn table_point_summary
+/// takes 2 dimensional array as argument, it saves each players point's in their own column
 /// and after the player's turn is over, the table is being printed
+///
 void table_point_summary(int array_points[][2]);
 
-/// \fn table_point_scoring - takes 2 dimensional array as argument and bool to see if the player has re-rolled
+/// \fn table_point_scoring
+/// takes 2 dimensional array as argument and bool to see if the player has re-rolled
 /// then saves all the points to the table
+///
 void table_point_scoring(int array_points[][2], bool has_rerolled);
 
 /*array_points[12][2] = {{0,                0},  //9s       position 0

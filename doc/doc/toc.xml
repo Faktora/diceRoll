@@ -1,0 +1,56 @@
+<toc label="pokerDice" topic="index.html">
+  <topic label="Projekt Poker Dice, from Nedelin Todorov" href="index.html"/>
+  <topic label="Files" href="files.html">
+    <topic label="File List" href="files.html">
+      <topic label="C:" href="dir_e6bb53534ac0e427887cf7a94c0c004e.html">
+        <topic label="Users" href="dir_8ceffd4ee35c3518d4e8bdc7e638efe8.html">
+          <topic label="Faktora" href="dir_d07405d4202f891f5a57e22d3b7d7761.html">
+            <topic label="Desktop" href="dir_f36df6f6acf543a841ca2790a94cdaec.html">
+              <topic label="LinuxHome" href="dir_c54675c5df315258dcea58ab4d01d9d5.html">
+                <topic label="Project" href="dir_dab4ac92d59ae3d5ddcecb7635381f83.html">
+                  <topic label="diceRoll" href="dir_05805344e0353fcd525fd54ce10580e1.html">
+                    <topic label="cmake-build-debug" href="dir_62b01cc72f375789e558a01ab9ad0f20.html">
+                      <topic label="CMakeFiles" href="dir_36a5f5f912e200456064e2c01a6613ec.html">
+                        <topic label="3.15.3" href="dir_46359981049f5bfc484785478a55ccc9.html">
+                          <topic label="CompilerIdC" href="dir_bad52d5be0d34b146dc6fcf37aa44e2f.html">
+                            <topic label="CMakeCCompilerId.c" href="_c_make_c_compiler_id_8c_source.html"/>
+                          </topic>
+                        </topic>
+                      </topic>
+                    </topic>
+                    <topic label="base_functions.h" href="base__functions_8h.html">
+                      <topic label="calculate_points" href="base__functions_8h.html#aefe636e7e1d7dbbd4fa94489266fd3d8"/>
+                      <topic label="is_game_finished" href="base__functions_8h.html#ac42d6fb1511de6bc73f8b0ff9e679076"/>
+                      <topic label="keep_dice" href="base__functions_8h.html#a37bc1d233ddf63171ba18faabd3ac984"/>
+                      <topic label="roll_dice" href="base__functions_8h.html#a89fc7f21473903a85d2c1b41d64f53dd"/>
+                      <topic label="translate" href="base__functions_8h.html#a6067007ff0321d4416eed3d85265be14"/>
+                    </topic>
+                    <topic label="function.h" href="function_8h_source.html"/>
+                    <topic label="main.c" href="main_8c_source.html"/>
+                    <topic label="point_computing.h" href="point__computing_8h.html">
+                      <topic label="is_consecutive" href="point__computing_8h.html#a009ae95c379b07e2783435ad2aae73ca"/>
+                      <topic label="is_fullhouse" href="point__computing_8h.html#aab22001d4537bf3955de618ac3d0c88d"/>
+                      <topic label="is_grande" href="point__computing_8h.html#ac5b7027005d875850e73926478be8d17"/>
+                      <topic label="is_highest" href="point__computing_8h.html#afdce00553505740b533fb274797987ef"/>
+                      <topic label="is_max" href="point__computing_8h.html#a886606d02c6eb22ddef1195ec25a74f5"/>
+                      <topic label="is_min" href="point__computing_8h.html#a77bb3b6384ede9886c8e3e8f1191e91c"/>
+                      <topic label="is_poker" href="point__computing_8h.html#ae0bea082b9f0f6c4f16a8cd6dbc7e377"/>
+                    </topic>
+                    <topic label="table_point_sum.h" href="table__point__sum_8h.html">
+                      <topic label="table_point_scoring" href="table__point__sum_8h.html#a3413a05fd81d30d09b24c51d81b2bfda"/>
+                      <topic label="table_point_summary" href="table__point__sum_8h.html#aa16d1d322eb1c0f027e967fab468970a"/>
+                    </topic>
+                  </topic>
+                </topic>
+              </topic>
+            </topic>
+          </topic>
+        </topic>
+      </topic>
+    </topic>
+    <topic label="Globals" href="globals.html">
+      <topic label="All" href="globals.html"/>
+      <topic label="Functions" href="globals_func.html"/>
+    </topic>
+  </topic>
+</toc>
