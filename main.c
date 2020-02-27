@@ -186,7 +186,7 @@ bool calculate_points(bool *has_rerolled) {
 }
 
 
-//finding the smallest element in the array
+
 int is_min(const int player_throws_min[], int array_throws_length) {
     int min = player_throws_min[0];
     for (int i = 0; i < array_throws_length; i++) {
@@ -197,7 +197,7 @@ int is_min(const int player_throws_min[], int array_throws_length) {
     return min;
 }
 
-//finding the biggest element in the array
+
 int is_max(const int player_throws_max[], int array_throws_length) {
     int max = player_throws_max[0];
     for (int i = 0; i < array_throws_length; i++) {
@@ -285,7 +285,6 @@ bool is_fullhouse() {
     return (first_possibility || second_possibility);
 }
 
-//sorting array by power
 void is_highest(const int array[]) {
     int i, j, minimum_j;
 
@@ -332,13 +331,15 @@ bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]
 }
 
 void table_point_summary(int array_points[][2]){
-    bool already_saved = false; //checking if the player have saved to the table already
+    //bool already_saved = false; //checking if the player have saved to the table already
 
     //Scoring table
     char array_first_row[3][10] = {"Deck", "Player 1", "Player 2"};
     char array_rolls_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
                                "Straight", "Full House", "Poker", "Grande", "Sum"};
-    /*array_points[12][2] = {{0,                0},  //9s       position 0
+    /* How array looks like:
+     * array_points[12][2] = {
+     *                  {0,                0},  //9s            position 0
                         {0,                0},  //10s           position 1
                         {0,                0},  //Jacks         position 2
                         {0,                0},  //Queens        position 3
@@ -348,7 +349,8 @@ void table_point_summary(int array_points[][2]){
                         {0,                0},  //Full House    position 7
                         {0,                0},  //Poker         position 8
                         {0,                0},  //Grande        position 9
-                        {0,                0}}; //Sum           position 10
+                        {0,                0}   //Sum           position 10
+                        };
      */
 
     // just 1000 loops printing the beautiful table

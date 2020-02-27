@@ -2,10 +2,12 @@
 // Created by Faktora on 27-Feb-20.
 //
 
-
+/// \file table_point_sum.h
 /// \brief Function for game mode: 2. Table Point Summary. Saves and prints out data
+///
 /// \param table_point_summary - takes 2 dimensional array as argument, it saves each players point's in their own column
 /// and after the player's turn is over, the table is being printed
+///
 
 #ifndef POKERDICE_TABLE_POINT_SUM_H
 #define POKERDICE_TABLE_POINT_SUM_H

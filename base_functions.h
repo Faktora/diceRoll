@@ -1,7 +1,9 @@
+
 //
 // Created by Faktora on 26-Feb-20.
 //
 
+/// \file base_functions.h
 /// \brief universal game functions used in all of the gaming modes
 ///
 /// \param roll_dice - takes int keep for amount of dices to keep and array for the chosen dices to save to, also
@@ -12,6 +14,7 @@
 /// \param calculate_points - takes one boolean argument to check for re-rolls, sums player points
 /// \param is_game_finished - takes players game choice, if he re-rolled and players array with points,
 /// at the end of each round checks if the player reached the needed amount of points to win
+///
 
 #ifndef POKERDICE_BASE_FUNCTIONS_H
 #define POKERDICE_BASE_FUNCTIONS_H
