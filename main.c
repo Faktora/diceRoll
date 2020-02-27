@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "function.h"
+#include "table_point_sum.h"
 #include "base_functions.h"
 #include "point_computing.h"
 
