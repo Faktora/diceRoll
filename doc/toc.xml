@@ -1,14 +1,5 @@
 <toc label="pokerDice" topic="index.html">
-  <topic label="Poker Dice" href="index.html">
-    <topic label="Used library:" href="index.html#autotoc_md1"/>
-    <topic label="1. time.h" href="index.html#autotoc_md2"/>
-    <topic label="2. stdlib.h" href="index.html#autotoc_md3"/>
-    <topic label="3. stdbool.h" href="index.html#autotoc_md4"/>
-    <topic label="4. function.h - header file with all functions" href="index.html#autotoc_md5"/>
-    <topic label="Tasks Complete:" href="index.html#autotoc_md6"/>
-    <topic label="1. Main Program" href="index.html#autotoc_md7"/>
-    <topic label="2. Additional point counting" href="index.html#autotoc_md8"/>
-  </topic>
+  <topic label="Projekt Poker Dice, from Nedelin Todorov" href="index.html"/>
   <topic label="Files" href="files.html">
     <topic label="File List" href="files.html">
       <topic label="C:" href="dir_e6bb53534ac0e427887cf7a94c0c004e.html">

@@ -20,7 +20,7 @@ __Completed Tasks__:
 
 == Task Specification ==
 
-Implement a simple poker dice link:https://de.wikipedia.org/wiki/Escalero[game]. Two players roll 5 dices maximum 3 times per round and the points are summarized. First one to reach 100 points wins.
+Implement a simple poker dice link:https://de.wikipedia.org/wiki/Escalero . Two players roll 5 dices maximum 3 times per round and the points are summarized. First one to reach 100 points wins.
 
 . **Main Task (40 points)**
   * Implement a program which allows two human players to play poker dice.
@@ -114,7 +114,7 @@ In the table only one row value can be written per round.
 . **Task (25 points)**
 +
   * Extend the program to use ncurses.
-  Description how to use ncurses can be found link:https://embsys.technikum-wien.at/mio/bic/1/prg/download/ncurses.pdf[here].
+  Description how to use ncurses can be found link:https://embsys.technikum-wien.at/mio/bic/1/prg/download/ncurses.pdf .
   * Build the Playfield, Point summary or table or pyramid on the screen and only overwrite the changed parts.
 
 
