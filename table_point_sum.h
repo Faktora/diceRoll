@@ -14,6 +14,8 @@
 
 void table_point_summary(int array_points[][2]);
 
+void table_point_scoring(int array_points[][2]);
+
 /*array_points[12][2] = {{0,                0},  //9s       position 0
                         {0,                0},  //10s           position 1
                         {0,                0},  //Jacks         position 2
