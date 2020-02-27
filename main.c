@@ -281,7 +281,7 @@ bool is_fullhouse() {
     return (first_possibility || second_possibility);
 }//full house
 
-void is_highest(const int array[]) {
+void is_highest() {
     int i, j, minimum_j;
 
     for (i = 0; i < LENGTH; i++) {
@@ -319,8 +319,7 @@ bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_choice == 2) {
-        calculate_points(has_rerolled);
-        table_point_scoring(array_points);
+        table_point_scoring(array_points, has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     }
     return false;
@@ -375,129 +374,75 @@ void table_point_summary(int points[][2]){
     }
 }
 
-void table_point_scoring(int points_array[][2]){
-    char save;
+void table_point_scoring(int points_array[][2], bool has_rerolled){
+    int save_single_throw;
+    char save_special_throw;
     int single_throws[6] = {0};
     bool already_saved = false;
 
     /* Counting what and how many of each individual type of dice is rolled
      * after that it is printed so the player can see the result
      * currently prints it when the player wishes to save; right before printing the table which
-     * makes it completely useless
+     * makes it completely useless*/
     for(int i = 0; i < LENGTH; i++){
-        if (player_throws[current_player] == 0){
-            nines += 1;
+        if (player_throws[current_player][i] == 0){
+            single_throws[0] += 1;
         }
         else if(player_throws[current_player][i] == 1){
-            tens += 1;
+            single_throws[1] += 1;
         }
         else if(player_throws[current_player][i] == 2){
-            jacks += 1;
+            single_throws[2] += 1;
         }
         else if(player_throws[current_player][i] == 3){
-            queens += 1;
+            single_throws[3] += 1;
         }
         else if(player_throws[current_player][i] == 4){
-            kings += 1;
+            single_throws[4] += 1;
         }
         else if(player_throws[current_player][i] == 5){
-            aces += 1;
+            single_throws[5] += 1;
         }
     }
-
-    if(nines > 0){
-        printf("You got %d Nine(s)!\n", nines);
-    }
-    if(tens > 0){
-        printf("You got %d Ten(s)!\n", tens);
-    }
-    if(jacks > 0){
-        printf("You got %d Jack(s)!\n", jacks);
-    }
-    if(queens > 0){
-        printf("You got %d Queen(s)!\n", queens);
-    }
-    if(kings > 0){
-        printf("You got %d King(s)!\n", kings);
-    }
-    if(aces > 0){
-        printf("You got %d Ace(s)!\n", aces);
-    }*/
 
     if(is_grande(player_throws[current_player], LENGTH)){
         printf("You got Grande! That's 50 pts. Wanna save? y/n\n");//change to real sum 50/80pts
-        scanf(" %c", &save);
+        scanf(" %c", &save_special_throw);
 
-        if(save == 'Y' || save == 'y'){
+        if(save_special_throw == 'Y' || save_special_throw == 'y'){
             points_array[9][current_player] += 1;
             already_saved = true;
-            /*if (points_array[9][current_player] == 0){
-                points_array[9][current_player] += 1;
-                bool already_saved = true;
-            }else if (points_array[9][current_player] == 1){
-                points_array[9][current_player] += 1;
-                bool already_saved = true;
-            }else if (points_array[9][current_player] == 2){
-                points_array[9][current_player] += 1;
-                bool already_saved = true;
-            } else {
-                printf("\nYou have already saved 3.\n Save something else.\n");
-            }*/
         }
-        points_array[10][current_player] = player_points[current_player];
+        points_array[10][current_player] += (has_rerolled ? 50 : 80);
         table_point_summary(points_array);
     }
-    if(is_poker(player_throws[current_player], LENGTH)){
+    if(is_poker()){
         printf("You got Poker! That's X amount of pts. Wanna save? y/n\n");// change to real sum 40/45
-        scanf(" %c", &save);
+        scanf(" %c", &save_special_throw);
 
-        if(save == 'Y' || save == 'y'){
+        if(save_special_throw == 'Y' || save_special_throw == 'y'){
             points_array[8][current_player] += 1;
             already_saved = true;
-            /*if (points_array[8][current_player] == 0){
-                points_array[8][current_player] += 1;
-                bool already_saved = true;
-            }else if (points_array[8][current_player] == 1){
-                points_array[8][current_player] += 1;
-                bool already_saved = true;
-            }else if (points_array[8][current_player] == 2){
-                points_array[8][current_player] += 1;
-                bool already_saved = true;
-            } else {
-                printf("\nYou have already saved 3.\n Save something else.\n");
-            }*/
         }
-        points_array[10][current_player] = player_points[current_player];
+        points_array[10][current_player] += (has_rerolled ? 40 : 45);
         table_point_summary(points_array);
     }
-    if(is_fullhouse(player_throws[current_player], LENGTH)){
+    if(is_fullhouse()){
         printf("You got Full House! That's 50 pts. Wanna save? y/n\n");//change to actual sum 30/35
-        scanf(" %c", &save);
+        scanf(" %c", &save_special_throw);
 
-        if(save == 'Y' || save == 'y'){
+        if(save_special_throw == 'Y' || save_special_throw == 'y'){
             points_array[7][current_player] += 1;
             already_saved = true;
-            /*if (points_array[7][current_player] == 0){
-                points_array[7][current_player] += 1;
-                already_saved = true;
-            }else if (points_array[7][current_player] == 1){
-                points_array[7][current_player] += 1;
-                already_saved = true;
-            }else if (points_array[7][current_player] == 2){
-                points_array[7][current_player] += 1;
-                already_saved = true;
-            } else {
-                printf("\nYou have already saved 3.\n Save something else.\n");
-            }*/
         }
-        points_array[10][current_player] = player_points[current_player];
+        points_array[10][current_player] += (has_rerolled ? 30 : 35);
         table_point_summary(points_array);
     }
     if(is_consecutive(player_throws[current_player], LENGTH)){
         printf("You got Straight! That's 50 pts. Wanna save? y/n\n");//change to real sum 20/25pts
-        scanf(" %c", &save);
+        scanf(" %c", &save_special_throw);
 
-        if(save == 'Y' || save == 'y'){
+        if(save_special_throw == 'Y' || save_special_throw == 'y'){
             points_array[6][current_player] += 1;
             already_saved = true;
             /*if (points_array[6][current_player] == 0){
@@ -513,7 +458,7 @@ void table_point_scoring(int points_array[][2]){
                 printf("\nYou have already saved three times.\n Save something else.\n");
             }*/
         }
-        points_array[10][current_player] = player_points[current_player];
+        points_array[10][current_player] += (has_rerolled ? 20 : 25);
         table_point_summary(points_array);
     }
 
@@ -523,13 +468,16 @@ void table_point_scoring(int points_array[][2]){
     while (!already_saved) {
         printf("Which dice/dices do you want to save?\n");
         printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
-        scanf(" %c", &save);
+        scanf(" %d", &save_single_throw);
 
-        if (single_throws[save] > 0) {
-            points_array[save][current_player] += single_throws[save];
+        if (single_throws[save_single_throw] > 0) {
+            points_array[save_single_throw][current_player] += single_throws[save_single_throw];
             already_saved = true;
+            points_array[10][current_player] += single_throws[save_single_throw] * (save_single_throw + 1);
         } else {
             printf("\nNo cheating! You did not throw any these this round!\n");
         }
     }
+
+    table_point_summary(points_array);
 }
