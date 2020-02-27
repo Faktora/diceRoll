@@ -23,7 +23,7 @@ bool is_consecutive(int player_throws[], int array_throws_length);
 /* helping functions for is_consecutive, they find the min and max number in the array player_throws */
 
 
-/// \fn is_min
+/// \param is_min
 /// searches the array with player throws for the min element in it
 int is_min(const int player_throws[], int array_throws_length);
 
