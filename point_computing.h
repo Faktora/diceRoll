@@ -1,6 +1,5 @@
-//
-// Created by Faktora on 26-Feb-20.
-//
+// Created by Nedelin Todorov on 26-Feb-20.
+
 #include <stdbool.h>
 
 /// \file point_computing.h
