@@ -380,9 +380,55 @@ void table_point_summary(int points[][2]){
 
 void table_point_scoring(int points_array[][2]){
     char save;
+    int nines = 0, tens = 0, jacks = 0, queens = 0, kings = 0, aces = 0;
     bool already_saved = false;
+
+    /* Counting what and how many of each individual type of dice is rolled
+     * after that it is printed so the player can see the result
+     * currently prints it when the player wishes to save; right before printing the table which
+     * makes it completely useless
+    for(int i = 0; i < LENGTH; i++){
+        if (player_throws[current_player] == 0){
+            nines += 1;
+        }
+        else if(player_throws[current_player][i] == 1){
+            tens += 1;
+        }
+        else if(player_throws[current_player][i] == 2){
+            jacks += 1;
+        }
+        else if(player_throws[current_player][i] == 3){
+            queens += 1;
+        }
+        else if(player_throws[current_player][i] == 4){
+            kings += 1;
+        }
+        else if(player_throws[current_player][i] == 5){
+            aces += 1;
+        }
+    }
+
+    if(nines > 0){
+        printf("You got %d Nine(s)!\n", nines);
+    }
+    if(tens > 0){
+        printf("You got %d Ten(s)!\n", tens);
+    }
+    if(jacks > 0){
+        printf("You got %d Jack(s)!\n", jacks);
+    }
+    if(queens > 0){
+        printf("You got %d Queen(s)!\n", queens);
+    }
+    if(kings > 0){
+        printf("You got %d King(s)!\n", kings);
+    }
+    if(aces > 0){
+        printf("You got %d Ace(s)!\n", aces);
+    }*/
+
     if(&is_grande){
-        printf("You got grande! Thats 50 pts. Wanna save? y/n\n");
+        printf("You got Grande! That's 50 pts. Wanna save? y/n\n");//change to real sum 50/80pts
         scanf(" %c", &save);
 
         if(save == 'Y' || save == 'y'){
@@ -403,7 +449,7 @@ void table_point_scoring(int points_array[][2]){
         table_point_summary(points_array);
     }
     if(&is_poker){
-        printf("You got grande! Thats 50 pts. Wanna save? y/n\n");
+        printf("You got Poker! That's X amount of pts. Wanna save? y/n\n");// change to real sum 40/45
         scanf(" %c", &save);
 
         if(save == 'Y' || save == 'y'){
@@ -424,7 +470,7 @@ void table_point_scoring(int points_array[][2]){
         table_point_summary(points_array);
     }
     if(&is_fullhouse){
-        printf("You got grande! Thats 50 pts. Wanna save? y/n\n");
+        printf("You got Full House! That's 50 pts. Wanna save? y/n\n");//change to actual sum 30/35
         scanf(" %c", &save);
 
         if(save == 'Y' || save == 'y'){
@@ -445,7 +491,7 @@ void table_point_scoring(int points_array[][2]){
         table_point_summary(points_array);
     }
     if(&is_consecutive){
-        printf("You got grande! Thats 50 pts. Wanna save? y/n\n");
+        printf("You got Straight! That's 50 pts. Wanna save? y/n\n");//change to real sum 20/25pts
         scanf(" %c", &save);
 
         if(save == 'Y' || save == 'y'){
@@ -465,7 +511,13 @@ void table_point_scoring(int points_array[][2]){
         points_array[10][current_player] = player_points[current_player];
         table_point_summary(points_array);
     }
+
+    /*this while loop save single dice values only, aka when there is no unique combination roll
+     * if the player have already saved then this while loop will be skipped*/
     while (already_saved == false){
-        
+        printf("Which dice/dices do you want to save?\n");
+        printf("N = Nines, T = Tens, J = Jacks, Q = Queens, K = Kings, A = Aces");
     }
 }
+
+//need to save single dice choices when there are no unique rolls made!!!!!
