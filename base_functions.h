@@ -46,7 +46,8 @@ bool calculate_points(const bool *has_rerolled);
  * \param game_choice - user's choice of game mode to play
  * \param has_rerolled - true if the player has re-rolled, which results in fewer points from special rolls; used for function call
  * \param array_points - two dimensional array saving each player's points in it's own column
+ * \param single_throws - stores current player and round dice throws by type
  * */
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2], int single_throws[6]);
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]);
 
 #endif //POKERDICE_BASE_FUNCTIONS_H
