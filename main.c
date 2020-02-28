@@ -63,7 +63,7 @@ int main() {
             is_turn_ended = keep_dice(save_dice, &count_rolls, &has_rerolled);
         }
 
-        game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points);
+        game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points, single_throws);
         count_rolls = 0;
         setbuf(stdout, 0);
         printf("\n");
@@ -314,12 +314,12 @@ void roll_dice(int keep, const int *array_keep) {
     }
 }
 
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]) {
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2], int single_throws[6]) {
     if (game_choice == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_choice == 2) {
-        table_point_scoring(array_points, has_rerolled);
+        table_point_scoring(array_points, has_rerolled, single_throws);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     }
     return false;
@@ -392,32 +392,16 @@ void count_single_throws(int array_single_throws[6]){
     }
 }
 
-void table_point_scoring(int points_array[][2], bool has_rerolled) {
+void table_point_scoring(int points_array[][2], bool has_rerolled, int single_throws[6]) {
     int save_single_throw;
     char save_special_throw;
-    int single_throws[6] = {0};
     bool already_saved = false;
 
     /* Counting what and how many of each individual type of dice is rolled
      * after that it is printed so the player can see the result
      * currently prints it when the player wishes to save; right before printing the table which
      * makes it completely useless*/
-    count_single_throws(*player_throws);
-    for (int i = 0; i < LENGTH; i++) {
-        if (player_throws[current_player][i] == 0) {
-            single_throws[0] += 1;
-        } else if (player_throws[current_player][i] == 1) {
-            single_throws[1] += 1;
-        } else if (player_throws[current_player][i] == 2) {
-            single_throws[2] += 1;
-        } else if (player_throws[current_player][i] == 3) {
-            single_throws[3] += 1;
-        } else if (player_throws[current_player][i] == 4) {
-            single_throws[4] += 1;
-        } else if (player_throws[current_player][i] == 5) {
-            single_throws[5] += 1;
-        }
-    }
+    count_single_throws(single_throws);
 
     if (is_grande(player_throws[current_player], LENGTH)) {
         printf("You got Grande! That's 50 pts. Wanna save? y/n\n");//change to real sum 50/80pts
@@ -480,7 +464,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled) {
             already_saved = true;
             points_array[10][current_player] += single_throws[save_single_throw] * (save_single_throw + 1);
         } else {
-            printf("\nNo cheating! You did not throw any these this round!\n");
+            printf("\nNo cheating! You did not throw any of those this round!\n");
         }
     }
     table_point_summary(points_array);

@@ -21,7 +21,7 @@ void table_point_summary(int array_points[][2]);
  * \param has_rerolled -
  * used in points calculating, checks if the player did special roll on first throw or not
  * */
-void table_point_scoring(int array_points[][2], bool has_rerolled);
+void table_point_scoring(int array_points[][2], bool has_rerolled, int single_throws[6]);
 
 void count_single_throws(int array_single_throws[6]);
 
