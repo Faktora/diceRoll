@@ -7,14 +7,14 @@
 #ifndef POKERDICE_TABLE_POINT_SUM_H
 #define POKERDICE_TABLE_POINT_SUM_H
 
-/** \fn table_point_summary
+/** \fn void table_point_summary(int array_points[][2])
  * \brief prints the static part of the table
  *  \param array_points -
  *  stores each player's score in his own column
  * */
 void table_point_summary(int array_points[][2]);
 
-/** \fn table_point_scoring
+/** \fn void table_point_scoring(int array_points[][2], bool has_rerolled)
  * \brief the backbone of the 2nd game mode, calculate each player's points, then saves them in the respective column
  * \param array_points -
  * stores each player's score in his own column
