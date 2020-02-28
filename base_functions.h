@@ -18,7 +18,7 @@
  * \param keep -
  * amount of dice that the player wants to keep
  * */
-void roll_dice(int keep, int *array_keep);
+void roll_dice(int keep, const int *array_keep);
 
 /** \fn void translate(const int array[])
  * \brief basic printing function for player throws
@@ -39,7 +39,7 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled);
  * \brief basic calculating function
  * \param has_rerolled - true if the player has re-rolled, which results in fewer points from special rolls
  * */
-bool calculate_points(bool *has_rerolled);
+bool calculate_points(const bool *has_rerolled);
 
 /** \fn bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2])
  * \brief main game function that ends the game when a requirement is met

@@ -23,4 +23,6 @@ void table_point_summary(int array_points[][2]);
  * */
 void table_point_scoring(int array_points[][2], bool has_rerolled);
 
+void count_single_throws(int array_single_throws[6]);
+
 #endif //POKERDICE_TABLE_POINT_SUM_H
