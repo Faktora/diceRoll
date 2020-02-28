@@ -1,55 +1,58 @@
 // Created by Nedelin Todorov on 26-Feb-20.
 
 
-///
-/// \file base_functions.h
-/// \brief universal game functions used in all of the gaming modes
-///
+/**
+ * \file base_functions.h
+ * \brief the basic game functions
+ * */
 
 #ifndef POKERDICE_BASE_FUNCTIONS_H
 #define POKERDICE_BASE_FUNCTIONS_H
 
 
-/*function using keep(amount of dices to keep) and array_keep (array with the elements the user wants to save)
- * then re-rolls the rest of the dice that are not supposed to be kept*/
-
-/// \fn roll_dice
-/// takes int keep for amount of dices to keep and array for the chosen dices to save to, also
-/// re-rolls all of the unsaved dices
-///
+/** \fn roll_dice
+ * \brief a basic function that rolls or if desired re-rolls players unwanted dice
+ * \param array_keep -
+ * pointer array with dices, the chosen ones are saved, rest gets re-rolled
+ * \param keep -
+ * amount of dice that the player wants to keep
+ * */
 void roll_dice(int keep, int *array_keep);
 
-/*function used to print out the rolled dices*/
-
-/// \fn translate
-/// takes the array with current throws and prints it to a understandable for the user text
-///
+/** \fn translate
+ * \brief basic printing function for player throws
+ * \param array -
+ * array with current player throws
+ * */
 void translate(const int array[]);
 
-/*function takes the dice we keep, how many rolls did the player do and if he re-rolled already
- * if it is first roll, we call function roll and then asks the user how many and which dices he wants to save */
-
-/// \fn keep_dice
-/// takes the amount of dices to keep, how many rolls have the user already made and a boolean
-/// if rolls = 3, no more re-rolls, if has_rerolled = true, lesser points for combination roll
-///
+/** \fn keep_dice
+ * \brief follows if the player is allowed to re-roll anymore
+ * \param keep -
+ * int used to store amount of dices to save
+ * \param amount_of_rolls -
+ * pointer to int that stores how many rolls did the player
+ * \param has_rerolled -
+ * true if the player has re-rolled, which results in fewer points from special rolls
+ * */
 bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled);
 
-/*function using the re-rolled boolean to check for extra points
- * just prints and then saves the points each player made*/
-
-/// \fn calculate_points
-/// takes one boolean argument to check for re-rolls, sums player points
-///
+/** \fn calculate_points
+ * \brief basic calculating function
+ * \param has_rerolled -
+ * true if the player has re-rolled, which results in fewer points from special rolls
+ * */
 bool calculate_points(bool *has_rerolled);
 
-/*game switching for other mods to come takes user input game_choice and whether the player has rerolled
-* used to call the game type and its corresponding pointing system*/
-
-/// \fn is_game_finished
-/// takes players game choice, if he re-rolled and players array with points,
-/// at the end of each round checks if the player reached the needed amount of points to win
-///
+/** \fn is_game_finished
+ * \brief main game function that ends the game when a requirement is met
+ * \param game_choice -
+ * user's choice of game mode to play
+ * \param has_rerolled -
+ * true if the player has re-rolled, which results in fewer points from special rolls; used for function call
+ * \param array_points -
+ * two dimensional array saving each player's points in it's own column
+ * */
 bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]);
 
 #endif //POKERDICE_BASE_FUNCTIONS_H

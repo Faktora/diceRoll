@@ -35,7 +35,7 @@ int current_player = 1;
 
 int main() {
     srand((unsigned int) time(NULL));// starting here for more randomness
-    int save_dice = 0;// takes users choice on which dice to keep, rest is getting rerolled!!!
+    int save_dice = 0;// takes users choice on which dice to keep, rest is getting re-rolled!!!
     int user_game_choice = 0;
     int round_counter = 1;
     int count_rolls = 0;
@@ -56,7 +56,6 @@ int main() {
         }
 
         printf("Player %d Roll %d Good luck!\n", current_player + 1, count_rolls + 1);
-        setbuf(stdout, 0);
         bool is_turn_ended = false;
         bool has_rerolled = false;
         while (!is_turn_ended) {
@@ -309,7 +308,7 @@ void roll_dice(int keep, int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = rand() % 6; //to make them shuffle again
+            player_throws[current_player][j] = rand() % 6;
         }
     }
 }
