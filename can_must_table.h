@@ -8,6 +8,6 @@
 
 //this function will be used in can must game mode
 //this function will only write to the table once per row per round
-void can_must_pt_one(int points_pt_one[][2], int single_throws[]);
+void can_must_pt_one(int points_pt_one[][2]);
 
 #endif //POKERDICE_CAN_MUST_TABLE_H

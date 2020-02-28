@@ -5,6 +5,7 @@
 #include "table_point_sum.h"
 #include "base_functions.h"
 #include "point_computing.h"
+#include "can_must_table.h"
 
 #define LENGTH 5 //length five because we throw 5 dices
 
@@ -320,6 +321,8 @@ bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]
     } else if (game_choice == 2) {
         table_point_scoring(array_points, has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
+    } else if (game_choice == 3){
+        can_must_pt_one(array_points);
     }
     return false;
 }
@@ -467,4 +470,42 @@ void table_point_scoring(int points_array[][2], bool has_rerolled){
     }
 
     table_point_summary(points_array);
+}
+
+void can_must_pt_one(int points_pt_one[][2]){
+    //bool already_written_row = false; i do not think that i need it; we shall see
+    int save_dice;
+    int single_throws[6] = {0};
+    for(int i = 0; i < LENGTH; i++){
+        if (player_throws[current_player][i] == 0){
+            single_throws[0] += 1;
+        }
+        else if(player_throws[current_player][i] == 1){
+            single_throws[1] += 1;
+        }
+        else if(player_throws[current_player][i] == 2){
+            single_throws[2] += 1;
+        }
+        else if(player_throws[current_player][i] == 3){
+            single_throws[3] += 1;
+        }
+        else if(player_throws[current_player][i] == 4){
+            single_throws[4] += 1;
+        }
+        else if(player_throws[current_player][i] == 5){
+            single_throws[5] += 1;
+        }
+    }
+
+    for (int i = 0; i < LENGTH; i++) {
+        if (player_throws[current_player][i] > 0){
+            printf("You can not write more than once in a row!\n Sorry these are the rules!");
+        } else if (player_throws[current_player][i] == 0){
+            printf("Which dice/dices do you wish to save?\n CAUTION: Only one write per row!\n");
+            printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
+            scanf(" %d", &save_dice);
+            points_pt_one[save_dice][current_player] = single_throws[save_dice];
+        }
+        table_point_summary(points_pt_one);
+    }
 }
