@@ -29,4 +29,9 @@ void table_point_scoring(int array_points[][2], bool has_rerolled);
  */
 void count_single_throws(int array_single_throws[6]);
 
+void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved);
+
+bool save_special(points_array[][2]);
+
+
 #endif //POKERDICE_TABLE_POINT_SUM_H

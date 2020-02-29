@@ -48,6 +48,6 @@ bool calculate_points(const bool *has_rerolled);
  * \param array_points - two dimensional array saving each player's points in it's own column
  * \param single_throws - stores current player and round dice throws by type
  * */
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2]);
+bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2], int round_counter);
 
 #endif //POKERDICE_BASE_FUNCTIONS_H
