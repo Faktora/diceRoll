@@ -322,7 +322,7 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
         table_point_scoring(array_points, has_rerolled, game_mode);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_mode == 3){
-        can_must_pt_one(array_points, round_counter, has_rerolled);
+        can_must_pt_one(array_points, round_counter, has_rerolled, game_mode);
     }
     return false;
 }
@@ -407,7 +407,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
 
     if(is_grande(player_throws[current_player], LENGTH)){
         printf("You got Grande! Wanna save? y/n\n");//change to real sum 50/80pts
-        already_saved = save_special(points_array, game_mode);
+        already_saved = save_special(points_array, game_mode, 9);
 
 
         points_array[10][current_player] += (has_rerolled ? 50 : 80);
@@ -415,21 +415,21 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
     }
     if(is_poker()){
         printf("You got Poker! Wanna save? y/n\n");// change to real sum 40/45
-        already_saved = save_special(points_array, game_mode);
+        already_saved = save_special(points_array, game_mode, 8);
 
         points_array[10][current_player] += (has_rerolled ? 40 : 45);
         table_point_summary(points_array);
     }
     if(is_fullhouse()){
         printf("You got Full House! Wanna save? y/n\n");//change to actual sum 30/35
-        already_saved = save_special(points_array, game_mode);
+        already_saved = save_special(points_array, game_mode, 7);
 
         points_array[10][current_player] += (has_rerolled ? 30 : 35);
         table_point_summary(points_array);
     }
     if(is_consecutive(player_throws[current_player], LENGTH)){
         printf("You got Straight! Wanna save? y/n\n");//change to real sum 20/25pts
-        already_saved = save_special(points_array, game_mode);
+        already_saved = save_special(points_array, game_mode, 6);
 
         points_array[10][current_player] += (has_rerolled ? 20 : 25);
         table_point_summary(points_array);
@@ -440,13 +440,18 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
     table_point_summary(points_array);
 }
 
-bool save_special(int points_array[][2], int game_mode){
+bool save_special(int points_array[][2], int game_mode, int row){
     char save_special_throw;
     scanf(" %c", &save_special_throw);
 
     if(save_special_throw == 'Y' || save_special_throw == 'y'){
-        points_array[9][current_player] += 1;
-        return true;
+        if(game_mode == 3 && points_array[row][current_player] != 0){
+            printf("You already saved here!\n");
+            return false;
+        }else {
+            points_array[row][current_player] += 1;
+            return true;
+        }
     } else{
         return false;
     }
@@ -454,19 +459,44 @@ bool save_special(int points_array[][2], int game_mode){
 
 void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved, int game_mode) {
     int save_single_throw;
+    bool can_save_single = false;
+    int save_into_row;
 
     /* this while loop save single dice values only, aka when there is no unique combination roll
      * or no more available unique saves
      * if the player have already saved then this while loop will be skipped */
+    for(int i = 0; i < 6; i++){
+        if (points_array[i][current_player] == 0 && single_throws[i] != 0){
+            can_save_single = true;
+        }
+    }
+
+    if(can_save_single && game_mode == 3){
+        printf("You can not save any singles.\n You must choose row to write 0 into.\n");
+        printf("Where do you want to write 0?\n");
+        scanf(" %d", &save_into_row);
+        while(!already_saved){
+            if(points_array[save_into_row][current_player] == 0){
+                points_array[save_into_row][current_player] = -1; // -1 means the player wrote 0 in this row
+                already_saved = true;
+            }
+        }
+    }
+
     while (!already_saved) {
     printf("Which dice/dices do you want to save?\n");
     printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
     scanf(" %d", &save_single_throw);
 
         if (single_throws[save_single_throw] > 0) {
-        points_array[save_single_throw][current_player] += single_throws[save_single_throw];
-        already_saved = true;
-        points_array[10][current_player] += single_throws[save_single_throw] * (save_single_throw + 1);
+            if (game_mode == 3 && points_array[save_single_throw][current_player] != 0) {
+                printf("You already wrote here!\n");
+            } else {
+                points_array[save_single_throw][current_player] += single_throws[save_single_throw];
+                already_saved = true;
+                points_array[10][current_player] += single_throws[save_single_throw] * (save_single_throw + 1);
+            }
+
         } else {
         printf("\nNo cheating! You did not throw any of these this round!\n");
         }
