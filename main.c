@@ -314,14 +314,14 @@ void roll_dice(int keep, const int *array_keep) {
     }
 }
 
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2], int round_counter) {
-    if (game_choice == 1) {
+bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter) {
+    if (game_mode == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
-    } else if (game_choice == 2) {
-        table_point_scoring(array_points, has_rerolled);
+    } else if (game_mode == 2) {
+        table_point_scoring(array_points, has_rerolled, game_mode);
         return ((player_points[current_player] >= 100) ? (true) : (false));
-    } else if (game_choice == 3){
+    } else if (game_mode == 3){
         can_must_pt_one(array_points, round_counter, has_rerolled);
     }
     return false;
@@ -376,7 +376,7 @@ void table_point_summary(int points[][2]){
     }
 }
 
-void table_point_scoring(int points_array[][2], bool has_rerolled){
+void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode){
     int single_throws[6] = {0};
     bool already_saved = false;
 
@@ -407,7 +407,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled){
 
     if(is_grande(player_throws[current_player], LENGTH)){
         printf("You got Grande! Wanna save? y/n\n");//change to real sum 50/80pts
-        already_saved = save_special(points_array);
+        already_saved = save_special(points_array, game_mode);
 
 
         points_array[10][current_player] += (has_rerolled ? 50 : 80);
@@ -415,32 +415,32 @@ void table_point_scoring(int points_array[][2], bool has_rerolled){
     }
     if(is_poker()){
         printf("You got Poker! Wanna save? y/n\n");// change to real sum 40/45
-        already_saved = save_special(points_array);
+        already_saved = save_special(points_array, game_mode);
 
         points_array[10][current_player] += (has_rerolled ? 40 : 45);
         table_point_summary(points_array);
     }
     if(is_fullhouse()){
         printf("You got Full House! Wanna save? y/n\n");//change to actual sum 30/35
-        already_saved = save_special(points_array);
+        already_saved = save_special(points_array, game_mode);
 
         points_array[10][current_player] += (has_rerolled ? 30 : 35);
         table_point_summary(points_array);
     }
     if(is_consecutive(player_throws[current_player], LENGTH)){
         printf("You got Straight! Wanna save? y/n\n");//change to real sum 20/25pts
-        already_saved = save_special(points_array);
+        already_saved = save_special(points_array, game_mode);
 
         points_array[10][current_player] += (has_rerolled ? 20 : 25);
         table_point_summary(points_array);
     }
     if(!already_saved){
-        save_singles_table(points_array, single_throws, already_saved);
+        save_singles_table(points_array, single_throws, already_saved, game_mode);
     }
     table_point_summary(points_array);
 }
 
-bool save_special(int points_array[][2]){
+bool save_special(int points_array[][2], int game_mode){
     char save_special_throw;
     scanf(" %c", &save_special_throw);
 
@@ -452,7 +452,7 @@ bool save_special(int points_array[][2]){
     }
 }
 
-void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved) {
+void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved, int game_mode) {
     int save_single_throw;
 
     /* this while loop save single dice values only, aka when there is no unique combination roll
@@ -473,7 +473,7 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     }
 }
 
-void can_must_pt_one(int points_pt_one[][2], int round_counter, bool has_rerolled) {
+void can_must_pt_one(int points_pt_one[][2], int round_counter, bool has_rerolled, int game_mode) {
     //bool already_written_row = false; i do not think that i need it; we shall see
     int save_dice;
     int single_throws[6] = {0};
@@ -494,6 +494,6 @@ void can_must_pt_one(int points_pt_one[][2], int round_counter, bool has_rerolle
     }
 
     if (round_counter < 10) {
-        table_point_scoring(points_pt_one, has_rerolled);
+        table_point_scoring(points_pt_one, has_rerolled, game_mode);
     }
 }

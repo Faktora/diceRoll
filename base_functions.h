@@ -41,13 +41,13 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled);
  * */
 bool calculate_points(const bool *has_rerolled);
 
-/** \fn bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2])
+/** \fn bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2])
  * \brief main game function that ends the game when a requirement is met
- * \param game_choice - user's choice of game mode to play
+ * \param game_mode - user's choice of game mode to play
  * \param has_rerolled - true if the player has re-rolled, which results in fewer points from special rolls; used for function call
  * \param array_points - two dimensional array saving each player's points in it's own column
  * \param single_throws - stores current player and round dice throws by type
  * */
-bool is_game_finished(int game_choice, bool *has_rerolled, int array_points[][2], int round_counter);
+bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter);
 
 #endif //POKERDICE_BASE_FUNCTIONS_H

@@ -21,7 +21,7 @@ void table_point_summary(int array_points[][2]);
  * \param has_rerolled -
  * used in points calculating, checks if the player did special roll on first throw or not
  * */
-void table_point_scoring(int array_points[][2], bool has_rerolled);
+void table_point_scoring(int array_points[][2], bool has_rerolled, int game_mode);
 
 /** \fn void count_single_throws(int array_single_throws[6])
  * \brief function that sums the type and amount if dice that are thrown
@@ -29,9 +29,9 @@ void table_point_scoring(int array_points[][2], bool has_rerolled);
  */
 void count_single_throws(int array_single_throws[6]);
 
-void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved);
+void save_singles_table(int points_array[][2], const int single_throws[], bool already_saved, int game_mode);
 
-bool save_special(points_array[][2]);
+bool save_special(points_array[][2], int game_mode);
 
 
 #endif //POKERDICE_TABLE_POINT_SUM_H
