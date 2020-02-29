@@ -44,6 +44,7 @@ int main() {
     bool game_finished = false;
 
     printf(" *** GAME MODES ***\n1) Normal point summary (100 Points)\n2) Table point summary (100 Points)\n");
+    printf("3) Can Must Game Mode\n");
     printf("\n");
     scanf("%d", &user_game_choice);
 
@@ -309,7 +310,7 @@ void roll_dice(int keep, const int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = rand() % 6;
+            player_throws[current_player][j] = 5;// rand() % 6;
         }
     }
 }
@@ -409,29 +410,28 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
         printf("You got Grande! Wanna save? y/n\n");//change to real sum 50/80pts
         already_saved = save_special(points_array, game_mode, 9);
 
-
-        points_array[10][current_player] += (has_rerolled ? 50 : 80);
+        points_array[10][current_player] += (has_rerolled ? 80 : 50);
         table_point_summary(points_array);
     }
     if(is_poker()){
         printf("You got Poker! Wanna save? y/n\n");// change to real sum 40/45
         already_saved = save_special(points_array, game_mode, 8);
 
-        points_array[10][current_player] += (has_rerolled ? 40 : 45);
+        points_array[10][current_player] += (has_rerolled ? 45 : 40);
         table_point_summary(points_array);
     }
     if(is_fullhouse()){
         printf("You got Full House! Wanna save? y/n\n");//change to actual sum 30/35
         already_saved = save_special(points_array, game_mode, 7);
 
-        points_array[10][current_player] += (has_rerolled ? 30 : 35);
+        points_array[10][current_player] += (has_rerolled ? 35 : 30);
         table_point_summary(points_array);
     }
     if(is_consecutive(player_throws[current_player], LENGTH)){
         printf("You got Straight! Wanna save? y/n\n");//change to real sum 20/25pts
         already_saved = save_special(points_array, game_mode, 6);
 
-        points_array[10][current_player] += (has_rerolled ? 20 : 25);
+        points_array[10][current_player] += (has_rerolled ? 25 : 20);
         table_point_summary(points_array);
     }
     if(!already_saved){
@@ -471,11 +471,11 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
         }
     }
 
-    if(can_save_single && game_mode == 3){
+    if(!can_save_single && game_mode == 3){
         printf("You can not save any singles.\n You must choose row to write 0 into.\n");
         printf("Where do you want to write 0?\n");
         scanf(" %d", &save_into_row);
-        while(!already_saved){
+        while(!already_saved && save_into_row < 10){
             if(points_array[save_into_row][current_player] == 0){
                 points_array[save_into_row][current_player] = -1; // -1 means the player wrote 0 in this row
                 already_saved = true;
@@ -488,7 +488,7 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
     scanf(" %d", &save_single_throw);
 
-        if (single_throws[save_single_throw] > 0) {
+        if (single_throws[save_single_throw] > 0 && save_single_throw < 6) {
             if (game_mode == 3 && points_array[save_single_throw][current_player] != 0) {
                 printf("You already wrote here!\n");
             } else {
