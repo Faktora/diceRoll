@@ -33,5 +33,7 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
 
 bool save_special(int points_array[][2], int game_mode, int row);
 
+int* gather_counts();
+
 
 #endif //POKERDICE_TABLE_POINT_SUM_H

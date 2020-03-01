@@ -51,7 +51,6 @@ int main() {
     while (!game_finished) {
         if (current_player == 0) {
             current_player = 1;
-            round_counter += 1;
         } else {
             printf("Round %d ", round_counter);
             current_player = 0;
@@ -66,6 +65,9 @@ int main() {
 
         game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points, round_counter);
         count_rolls = 0;
+        if(current_player == 1){
+            round_counter += 1;
+        }
         setbuf(stdout, 0);
         printf("\n");
 
@@ -310,7 +312,7 @@ void roll_dice(int keep, const int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = 5;// rand() % 6;
+            player_throws[current_player][j] = rand() % 6;
         }
     }
 }
@@ -323,12 +325,30 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
         table_point_scoring(array_points, has_rerolled, game_mode);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_mode == 3){
-        can_must_pt_one(array_points, round_counter, has_rerolled, game_mode);
+        printf(" THIS IS THE CURRENT ROUND STEFANE::::::   === %d", round_counter);
+        if (round_counter < 11){
+            table_point_scoring(array_points, has_rerolled, game_mode);
+        }else {
+            can_must_pt_two(round_counter, array_points);
+            if(round_counter == 20){
+                if(current_player){
+                    if (player_points[current_player] < player_points[current_player - 1]){
+                        current_player = 0;
+                        return true;
+                    }
+                } else {
+                    if (player_points[current_player] < player_points[current_player + 1]) {
+                        current_player = 1;
+                        return true;
+                    }
+                }
+            }
+        }
     }
     return false;
 }
 
-void table_point_summary(int points[][2]){
+void table_point_summary(int points[][2]) {
     //Function printing the scoring table
     char array_first_row[3][10] = {"Deck", "Player 1", "Player 2"};
     char array_rolls_column[12][11] = {"9s", "10s", "Jacks", "Queens", "Kings", "Aces",
@@ -378,13 +398,53 @@ void table_point_summary(int points[][2]){
 }
 
 void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode){
-    int single_throws[6] = {0};
+
     bool already_saved = false;
 
+    int* single_throws = gather_counts();
+
+    if(is_grande(player_throws[current_player], LENGTH)){
+        printf("You got Grande! Wanna save? y/n\n");
+        already_saved = save_special(points_array, game_mode, 9);
+
+        points_array[10][current_player] += (has_rerolled ? 50 : 80);
+    }
+    else if(is_poker()){
+        printf("You got Poker! Wanna save? y/n\n");
+        already_saved = save_special(points_array, game_mode, 8);
+
+        points_array[10][current_player] += (has_rerolled ? 40 : 45);
+    }
+    else if(is_fullhouse()){
+        printf("You got Full House! Wanna save? y/n\n");
+        already_saved = save_special(points_array, game_mode, 7);
+
+        points_array[10][current_player] += (has_rerolled ? 30 : 35);
+    }
+    else if(is_consecutive(player_throws[current_player], LENGTH)){
+        printf("You got Straight! Wanna save? y/n\n");
+        already_saved = save_special(points_array, game_mode, 6);
+
+        points_array[10][current_player] += (has_rerolled ? 20 : 25);
+    }
+    if(!already_saved){
+        save_singles_table(points_array, single_throws, already_saved, game_mode);
+    }
+    table_point_summary(points_array);
+    free(single_throws);
+}
+
+int* gather_counts(){
+    int* single_throws = malloc(6 * sizeof(int));
+
+    for (int i = 0; i < 6; i++) {
+        single_throws[i] = 0;
+    }
+
     /* Counting what and how many of each individual type of dice is rolled,
-     * after that it is printed so the player can see the result
-     * currently prints it when the player wishes to save; right before printing the table which
-     * makes it completely useless*/
+    * after that it is printed so the player can see the result
+    * currently prints it when the player wishes to save; right before printing the table which
+    * makes it completely useless*/
     for(int i = 0; i < LENGTH; i++){
         if (player_throws[current_player][i] == 0){
             single_throws[0] += 1;
@@ -405,39 +465,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
             single_throws[5] += 1;
         }
     }
-
-    if(is_grande(player_throws[current_player], LENGTH)){
-        printf("You got Grande! Wanna save? y/n\n");//change to real sum 50/80pts
-        already_saved = save_special(points_array, game_mode, 9);
-
-        points_array[10][current_player] += (has_rerolled ? 80 : 50);
-        table_point_summary(points_array);
-    }
-    if(is_poker()){
-        printf("You got Poker! Wanna save? y/n\n");// change to real sum 40/45
-        already_saved = save_special(points_array, game_mode, 8);
-
-        points_array[10][current_player] += (has_rerolled ? 45 : 40);
-        table_point_summary(points_array);
-    }
-    if(is_fullhouse()){
-        printf("You got Full House! Wanna save? y/n\n");//change to actual sum 30/35
-        already_saved = save_special(points_array, game_mode, 7);
-
-        points_array[10][current_player] += (has_rerolled ? 35 : 30);
-        table_point_summary(points_array);
-    }
-    if(is_consecutive(player_throws[current_player], LENGTH)){
-        printf("You got Straight! Wanna save? y/n\n");//change to real sum 20/25pts
-        already_saved = save_special(points_array, game_mode, 6);
-
-        points_array[10][current_player] += (has_rerolled ? 25 : 20);
-        table_point_summary(points_array);
-    }
-    if(!already_saved){
-        save_singles_table(points_array, single_throws, already_saved, game_mode);
-    }
-    table_point_summary(points_array);
+    return single_throws;
 }
 
 bool save_special(int points_array[][2], int game_mode, int row){
@@ -472,13 +500,15 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     }
 
     if(!can_save_single && game_mode == 3){
-        printf("You can not save any singles.\n You must choose row to write 0 into.\n");
+        printf("You can not save any singles.\nYou must choose row to write 0 into.\n");
         printf("Where do you want to write 0?\n");
-        scanf(" %d", &save_into_row);
-        while(!already_saved && save_into_row < 10){
-            if(points_array[save_into_row][current_player] == 0){
+        while(!already_saved){
+            scanf(" %d", &save_into_row);
+            if(save_into_row < 10 && points_array[save_into_row][current_player] == 0){
                 points_array[save_into_row][current_player] = -1; // -1 means the player wrote 0 in this row
                 already_saved = true;
+            } else {
+                printf("Input is not accepted!\n");
             }
         }
     }
@@ -503,27 +533,42 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     }
 }
 
-void can_must_pt_one(int points_pt_one[][2], int round_counter, bool has_rerolled, int game_mode) {
-    //bool already_written_row = false; i do not think that i need it; we shall see
-    int save_dice;
-    int single_throws[6] = {0};
-    for (int i = 0; i < LENGTH; i++) {
-        if (player_throws[current_player][i] == 0) {
-            single_throws[0] += 1;
-        } else if (player_throws[current_player][i] == 1) {
-            single_throws[1] += 1;
-        } else if (player_throws[current_player][i] == 2) {
-            single_throws[2] += 1;
-        } else if (player_throws[current_player][i] == 3) {
-            single_throws[3] += 1;
-        } else if (player_throws[current_player][i] == 4) {
-            single_throws[4] += 1;
-        } else if (player_throws[current_player][i] == 5) {
-            single_throws[5] += 1;
-        }
+void can_must_pt_two(int round_counter, int points_array[][2]) {
+    int* singles_throws = gather_counts();
+    int position = round_counter - 11;
+    int* current_score = &points_array[position][current_player];
+    int current_amount = singles_throws[position];
+    bool has_special = false;
+
+    switch (round_counter) {
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+            *current_score += (*current_score == -1) ? (current_amount + 1) : (current_amount);
+            break;
+        case 17:
+            has_special = is_consecutive(player_throws[current_player], LENGTH);
+            break;
+        case 18:
+            has_special = is_fullhouse();
+            break;
+        case 19:
+            has_special = is_poker();
+            break;
+        case 20:
+            has_special = is_grande(player_throws[current_player], LENGTH);
+            break;
+        default:
+            break;
     }
 
-    if (round_counter < 10) {
-        table_point_scoring(points_pt_one, has_rerolled, game_mode);
+    if(has_special) {
+        *current_score += (*current_score == -1) ? (current_amount + 1) : (current_amount);
+    } else if (*current_score == -1){
+        *current_score = 0;
     }
+    free(singles_throws);
 }
