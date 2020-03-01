@@ -66,7 +66,7 @@ int main() {
 
         game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points, round_counter);
         count_rolls = 0;
-        if(current_player == 1){
+        if (current_player == 1) {
             round_counter += 1;
         }
         setbuf(stdout, 0);
@@ -325,15 +325,15 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
     } else if (game_mode == 2) {
         table_point_scoring(array_points, has_rerolled, game_mode);
         return ((player_points[current_player] >= 100) ? (true) : (false));
-    } else if (game_mode == 3){
+    } else if (game_mode == 3) {
         printf(" THIS IS THE CURRENT ROUND STEFANE::::::   === %d", round_counter);
-        if (round_counter < 11){
+        if (round_counter < 11) {
             table_point_scoring(array_points, has_rerolled, game_mode);
-        }else {
+        } else {
             can_must_pt_two(round_counter, array_points);
-            if(round_counter == 20){
-                if(current_player){
-                    if (player_points[current_player] < player_points[current_player - 1]){
+            if (round_counter == 20) {
+                if (current_player) {
+                    if (player_points[current_player] < player_points[current_player - 1]) {
                         current_player = 0;
                         return true;
                     }
@@ -387,7 +387,7 @@ void table_point_summary(int points[][2]) {
     printf("\n");
     for (int i = 0; i < 11; i++) {
         printf("| %10s ", array_rolls_column[i]);
-        for (int j = 0; j < 2 ; j++) {
+        for (int j = 0; j < 2; j++) {
             printf("| %10d ", points[i][j]);
         }
         printf(" |\n");
@@ -398,45 +398,42 @@ void table_point_summary(int points[][2]) {
     }
 }
 
-void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode){
+void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode) {
 
     bool already_saved = false;
 
-    int* single_throws = gather_counts();
+    int *single_throws = gather_counts();
 
-    if(is_grande(player_throws[current_player], LENGTH)){
+    if (is_grande(player_throws[current_player], LENGTH)) {
         printf("You got Grande! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 9);
 
         points_array[10][current_player] += (has_rerolled ? 50 : 80);
-    }
-    else if(is_poker()){
+    } else if (is_poker()) {
         printf("You got Poker! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 8);
 
         points_array[10][current_player] += (has_rerolled ? 40 : 45);
-    }
-    else if(is_fullhouse()){
+    } else if (is_fullhouse()) {
         printf("You got Full House! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 7);
 
         points_array[10][current_player] += (has_rerolled ? 30 : 35);
-    }
-    else if(is_consecutive(player_throws[current_player], LENGTH)){
+    } else if (is_consecutive(player_throws[current_player], LENGTH)) {
         printf("You got Straight! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 6);
 
         points_array[10][current_player] += (has_rerolled ? 20 : 25);
     }
-    if(!already_saved){
+    if (!already_saved) {
         save_singles_table(points_array, single_throws, already_saved, game_mode);
     }
     table_point_summary(points_array);
     free(single_throws);
 }
 
-int* gather_counts(){
-    int* single_throws = malloc(6 * sizeof(int));
+int *gather_counts() {
+    int *single_throws = malloc(6 * sizeof(int));
 
     for (int i = 0; i < 6; i++) {
         single_throws[i] = 0;
@@ -446,42 +443,37 @@ int* gather_counts(){
     * after that it is printed so the player can see the result
     * currently prints it when the player wishes to save; right before printing the table which
     * makes it completely useless*/
-    for(int i = 0; i < LENGTH; i++){
-        if (player_throws[current_player][i] == 0){
+    for (int i = 0; i < LENGTH; i++) {
+        if (player_throws[current_player][i] == 0) {
             single_throws[0] += 1;
-        }
-        else if(player_throws[current_player][i] == 1){
+        } else if (player_throws[current_player][i] == 1) {
             single_throws[1] += 1;
-        }
-        else if(player_throws[current_player][i] == 2){
+        } else if (player_throws[current_player][i] == 2) {
             single_throws[2] += 1;
-        }
-        else if(player_throws[current_player][i] == 3){
+        } else if (player_throws[current_player][i] == 3) {
             single_throws[3] += 1;
-        }
-        else if(player_throws[current_player][i] == 4){
+        } else if (player_throws[current_player][i] == 4) {
             single_throws[4] += 1;
-        }
-        else if(player_throws[current_player][i] == 5){
+        } else if (player_throws[current_player][i] == 5) {
             single_throws[5] += 1;
         }
     }
     return single_throws;
 }
 
-bool save_special(int points_array[][2], int game_mode, int row){
+bool save_special(int points_array[][2], int game_mode, int row) {
     char save_special_throw;
     scanf(" %c", &save_special_throw);
 
-    if(save_special_throw == 'Y' || save_special_throw == 'y'){
-        if(game_mode == 3 && points_array[row][current_player] != 0){
+    if (save_special_throw == 'Y' || save_special_throw == 'y') {
+        if (game_mode == 3 && points_array[row][current_player] != 0) {
             printf("You already saved here!\n");
             return false;
-        }else {
+        } else {
             points_array[row][current_player] += 1;
             return true;
         }
-    } else{
+    } else {
         return false;
     }
 }
@@ -494,18 +486,18 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     /* this while loop save single dice values only, aka when there is no unique combination roll
      * or no more available unique saves
      * if the player have already saved then this while loop will be skipped */
-    for(int i = 0; i < 6; i++){
-        if (points_array[i][current_player] == 0 && single_throws[i] != 0){
+    for (int i = 0; i < 6; i++) {
+        if (points_array[i][current_player] == 0 && single_throws[i] != 0) {
             can_save_single = true;
         }
     }
 
-    if(!can_save_single && game_mode == 3){
+    if (!can_save_single && game_mode == 3) {
         printf("You can not save any singles.\nYou must choose row to write 0 into.\n");
         printf("Where do you want to write 0?\n");
-        while(!already_saved){
+        while (!already_saved) {
             scanf(" %d", &save_into_row);
-            if(save_into_row < 10 && points_array[save_into_row][current_player] == 0){
+            if (save_into_row < 10 && points_array[save_into_row][current_player] == 0) {
                 points_array[save_into_row][current_player] = -1; // -1 means the player wrote 0 in this row
                 already_saved = true;
             } else {
@@ -515,9 +507,9 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
     }
 
     while (!already_saved) {
-    printf("Which dice/dices do you want to save?\n");
-    printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
-    scanf(" %d", &save_single_throw);
+        printf("Which dice/dices do you want to save?\n");
+        printf("0 = Nines, 1 = Tens, 2 = Jacks, 3 = Queens, 4 = Kings, 5 = Aces\n");
+        scanf(" %d", &save_single_throw);
 
         if (single_throws[save_single_throw] > 0 && save_single_throw < 6) {
             if (game_mode == 3 && points_array[save_single_throw][current_player] != 0) {
@@ -529,15 +521,15 @@ void save_singles_table(int points_array[][2], const int single_throws[], bool a
             }
 
         } else {
-        printf("\nNo cheating! You did not throw any of these this round!\n");
+            printf("\nNo cheating! You did not throw any of these this round!\n");
         }
     }
 }
 
 void can_must_pt_two(int round_counter, int points_array[][2]) {
-    int* singles_throws = gather_counts();
+    int *singles_throws = gather_counts();
     int position = round_counter - 11;
-    int* current_score = &points_array[position][current_player];
+    int *current_score = &points_array[position][current_player];
     int current_amount = singles_throws[position];
     bool has_special = false;
     //must add prints to explain the point of each case!!!!
@@ -548,29 +540,37 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
         case 14:
         case 15:
         case 16:
+            printf("Round 11 - 9s | Round 12 - 10s | Round 13 - Jacks | Round 14 - Queens | Round 15 - Kings | Round 16 - Aces\n");
+            printf("If you dont throw them in the required round, you do not get ANY points.\n");
+            printf("Saving is done automatically in this part of the game! \n");
             *current_score += (*current_score == -1) ? (current_amount + 1) : (current_amount);
             break;
         case 17:
+            printf("You must make a Straight this round in order to get points!\n");
             has_special = is_consecutive(player_throws[current_player], LENGTH);
             break;
         case 18:
+            printf("You must make a Full House this round in order to get points!\n");
             has_special = is_fullhouse();
             break;
         case 19:
+            printf("You must make a Poker this round in order to get points!\n");
             has_special = is_poker();
             break;
         case 20:
+            printf("You must make a Grande this round in order to get points!\n");
             has_special = is_grande(player_throws[current_player], LENGTH);
             break;
         default:
             break;
     }
 
-    if(has_special) {
+    if (has_special) {
         *current_score += (*current_score == -1) ? (current_amount + 1) : (current_amount);
-    } else if (*current_score == -1){
+    } else if (*current_score == -1) {
         *current_score = 0;
     }
     table_point_summary(points_array);
     free(singles_throws);
 }
+
