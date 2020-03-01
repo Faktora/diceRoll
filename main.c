@@ -330,7 +330,7 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
         table_point_scoring(array_points, has_rerolled, game_mode);
         return ((player_points[current_player] >= 100) ? (true) : (false));
     } else if (game_mode == 3) {
-        printf(" THIS IS THE CURRENT ROUND STEFANE::::::   === %d", round_counter);
+        //printf(" THIS IS THE CURRENT ROUND ::::::   === %d \n", round_counter);
         if (round_counter < 11) {
             table_point_scoring(array_points, has_rerolled, game_mode);
         } else {
@@ -349,6 +349,8 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
                 }
             }
         }
+    } else if (game_mode == 4){
+        //this is pyramid game
     }
     return false;
 }
