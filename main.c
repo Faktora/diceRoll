@@ -6,6 +6,7 @@
 #include "base_functions.h"
 #include "point_computing.h"
 #include "can_must_table.h"
+#include "pyramid.h"
 
 #define LENGTH 5 //length five because we throw 5 dices
 
@@ -539,7 +540,7 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
     int* current_score = &points_array[position][current_player];
     int current_amount = singles_throws[position];
     bool has_special = false;
-
+    //must add prints to explain the point of each case!!!!
     switch (round_counter) {
         case 11:
         case 12:
@@ -570,5 +571,6 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
     } else if (*current_score == -1){
         *current_score = 0;
     }
+    table_point_summary(points_array);
     free(singles_throws);
 }
