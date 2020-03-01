@@ -1,6 +1,7 @@
 // Created by Nedelin Todorov on 26-Feb-20.
 
 #include <stdbool.h>
+#include "pyramid.h"
 
 /**
  * \file base_functions.h
@@ -48,6 +49,13 @@ bool calculate_points(const bool *has_rerolled);
  * \param array_points - two dimensional array saving each player's points in it's own column
  * \param single_throws - stores current player and round dice throws by type
  * */
-bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter);
+bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter, struct pyramid *pyra);
+
+/** \fn int next_free(const int* array_to_find_free_position, int array_len)
+ * \brief Finds next free position to indicate safe writing of values
+ * \param array_to_find_free_position - pointer to array to find free position in
+ * \param array_len - length of array to safely iterate through array
+ * */
+int next_free(const int* array_to_find_free_position, int array_len);
 
 #endif //POKERDICE_BASE_FUNCTIONS_H

@@ -42,12 +42,20 @@ int main() {
     int round_counter = 1;
     int count_rolls = 0;
     int array_points[12][2] = {0};
+    struct pyramid *pyra = {0};
     bool game_finished = false;
+
 
     printf(" *** GAME MODES ***\n1) Normal point summary (100 Points)\n2) Table point summary (100 Points)\n");
     printf("3) Can Must Game Mode\n");
+    printf("4) Pyramid\n");
     printf("\n");
     scanf("%d", &user_game_choice);
+
+    if(user_game_choice == 4) {
+        struct pyramid new_pyramid = initialise_pyramid();
+        pyra = &new_pyramid;
+    }
 
     while (!game_finished) {
         if (current_player == 0) {
@@ -64,7 +72,7 @@ int main() {
             is_turn_ended = keep_dice(save_dice, &count_rolls, &has_rerolled);
         }
 
-        game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points, round_counter);
+        game_finished = is_game_finished(user_game_choice, &has_rerolled, array_points, round_counter, pyra);
         count_rolls = 0;
         if (current_player == 1) {
             round_counter += 1;
@@ -317,12 +325,12 @@ void roll_dice(int keep, const int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = 0;//rand() % 6;
+            player_throws[current_player][j] = rand() % 6;
         }
     }
 }
 
-bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter) {
+bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], int round_counter, struct pyramid *pyra) {
     if (game_mode == 1) {
         calculate_points(has_rerolled);
         return ((player_points[current_player] >= 100) ? (true) : (false));
@@ -350,7 +358,11 @@ bool is_game_finished(int game_mode, bool *has_rerolled, int array_points[][2], 
             }
         }
     } else if (game_mode == 4){
-        //this is pyramid game
+        write_to_pyramid(pyra);
+        print_pyramid(pyra);
+        if(check_pyramid(pyra)) {
+            return true;
+        }
     }
     return false;
 }
@@ -582,109 +594,301 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
     free(singles_throws);
 }
 
-void write_to_pyramid(){
+struct pyramid initialise_pyramid() {
+    struct pyramid pyra = {
+            .grande = {0},
+            .poker = {0},
+            .full_house = {0},
+            .straight = {0},
+            .aces = {0},
+            .kings = {0},
+            .queens = {0},
+            .jacks = {0},
+            .tens = {0},
+            .nines = {0}
+    };
+
+    return pyra;
+}
+
+int next_free(const int* array_to_find_free_position, int array_len) {
+    int result = -1;
+    for(int i = 0; i < array_len; i++){
+        if(array_to_find_free_position[i] == 0) {
+            result = i;
+            break;
+        }
+    }
+
+    return result;
+}
+
+void write_to_pyramid(struct pyramid *pyra) {
     int *save_singles = gather_counts();
     int save_this;
-
-    printf("What do you want to save to the Pyramid?\nYou can save only once per round.\n");
-    scanf(" %d", &save_this);
+    char save_pls;
+    bool saved = false;
 
     if (is_grande()) {
-        if(pyra.grande[0][current_player] == 0) {
-            pyra.grande[0][current_player] = 1;
+        printf("You have a grande, do you want to save it to the pyramid?\n");
+        scanf(" %c", &save_pls);
+        int next_free_position = next_free(pyra->grande[current_player], 1);
+        if(next_free_position != -1 && (save_pls == 'y' || save_pls == 'Y')) {
+            pyra->grande[current_player][next_free_position] = 1;
+            saved = true;
         } else {
             printf("You can't write any more Grandes! This row is already filled!\n");
         }
     }
 
-    if(is_poker()) {
-        if (pyra.poker[0][current_player] == 0) {
-            pyra.poker[0][current_player] = 1;
-        } else if (pyra.poker[1][current_player] == 0) {
-            pyra.poker[1][current_player] = 1;
+    if(!saved && is_poker()) {
+        printf("You have a poker, do you want to save it to the pyramid?\n");
+        scanf(" %c", &save_pls);
+        int next_free_position = next_free(pyra->poker[current_player], 1);
+        if(next_free_position != -1 && (save_pls == 'y' || save_pls == 'Y')) {
+            pyra->poker[current_player][next_free_position] = 1;
+            saved = true;
         } else {
             printf("You can't write any more Pokers! This row is already filled!\n");
         }
     }
 
-    if (is_fullhouse()) {
-        if (pyra.full_house[0][current_player] == 0) {
-            pyra.full_house[0][current_player] = 1;
-        } else if ( pyra.full_house[1][current_player] == 0) {
-            pyra.full_house[1][current_player] = 1;
-        } else if (pyra.full_house[2][current_player] == 0) {
-            pyra.full_house[2][current_player] = 1;
+    if (!saved && is_fullhouse()) {
+        printf("You have a Full House, do you want to save it to the pyramid?\n");
+        scanf(" %c", &save_pls);
+        int next_free_position = next_free(pyra->full_house[current_player], 1);
+        if(next_free_position != -1 && (save_pls == 'y' || save_pls == 'Y')) {
+            pyra->full_house[current_player][next_free_position] = 1;
+            saved = true;
         } else {
             printf("You can't write any more Full Houses! This row is already filled!\n");
         }
     }
 
-    if (is_consecutive(player_throws[current_player])) {
-        if (pyra.straight[0][current_player] == 0) {
-            pyra.straight[0][current_player] = 1;
-        } else if ( pyra.straight[1][current_player] == 0) {
-            pyra.straight[1][current_player] = 1;
-        } else if (pyra.straight[2][current_player] == 0) {
-            pyra.straight[2][current_player] = 1;
-        } else if (pyra.straight[3][current_player] == 0) {
-            pyra.straight[3][current_player] = 1;
+    if (!saved && is_consecutive(player_throws[current_player])) {
+        printf("You have a Straight, do you want to save it to the pyramid?\n");
+        scanf(" %c", &save_pls);
+        int next_free_position = next_free(pyra->straight[current_player], 1);
+        if(next_free_position != -1 && (save_pls == 'y' || save_pls == 'Y')) {
+            pyra->straight[current_player][next_free_position] = 1;
+            saved = true;
         } else {
             printf("You can't write any more Straights! This row is already filled!\n");
         }
     }
 
-    if(save_this == 5) {
-        for (int i = 0; i <= 5; i++) {
-            if (save_singles[5] == i) {
-                pyra.aces[i][current_player] = i;
+    while(!saved) {
+        printf("What do you want to save to the Pyramid?\nYou can save only once per round.\n");
+        scanf(" %d", &save_this);
+
+        if(save_this == 5 && save_singles[5] != 0) {
+            int next_free_position = next_free(pyra->aces[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 5) {
+                        pyra->aces[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Aces row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Aces! This row is already filled!\n");
             }
-        }
-    } else if (save_this == 4) {
-        for (int i = 0; i <= 6; i++) {
-            if (save_singles[4] == i) {
-                pyra.kings[i][current_player] = i;
+        } else if (save_this == 4 && save_singles[4] != 0) {
+            int next_free_position = next_free(pyra->kings[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 6) {
+                        pyra->kings[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Kings row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Kings! This row is already filled!\n");
             }
-        }
-    } else if (save_this == 3) {
-        for (int i = 0; i <= 7; i++) {
-            if (save_singles[3] == i) {
-                pyra.queens[i][current_player] = i;
+        } else if (save_this == 3 && save_singles[3] != 0) {
+            int next_free_position = next_free(pyra->queens[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 7) {
+                        pyra->queens[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Queens row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Queens! This row is already filled!\n");
             }
-        }
-    } else if (save_this == 2) {
-        for (int i = 0; i <= 8; i++) {
-            if (save_singles[2] == i) {
-                pyra.jacks[i][current_player] = i;
+        } else if (save_this == 2 && save_singles[2] != 0) {
+            int next_free_position = next_free(pyra->jacks[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 8) {
+                        pyra->jacks[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Jacks row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Jacks! This row is already filled!\n");
             }
-        }
-    } else if (save_this == 1) {
-        for (int i = 0; i <= 9; i++) {
-            if (save_singles[1] == i) {
-                pyra.tens[i][current_player] = i;
+        } else if (save_this == 1 && save_singles[1] != 0) {
+            int next_free_position = next_free(pyra->tens[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 9) {
+                        pyra->tens[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Tens row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Tens! This row is already filled!\n");
             }
-        }
-    } else if (save_this == 0) {
-        for (int i = 0; i <= 10; i++) {
-            if (save_singles[0] == i) {
-                pyra.nines[i][current_player] = i;
+        } else if (save_this == 0 && save_singles[0] != 0) {
+            int next_free_position = next_free(pyra->nines[current_player], 1);
+            if(next_free_position != -1) {
+                for(int i = 0; i < save_singles[save_this]; i++) {
+                    if(next_free_position < 10) {
+                        pyra->nines[next_free_position][current_player] = 1;
+                        next_free_position++;
+                    } else {
+                        printf("You have filled up the Nines row!\n");
+                        break;
+                    }
+                }
+                saved = true;
             } else {
                 printf("You can't write any more Nines! This row is already filled!\n");
             }
+        } else {
+            printf("You do not have any amount of this card! Pick again.");
         }
     }
+}
+
+void print_pyramid(struct pyramid *pyra) {
+    printf("%12s", "Grande: ");
+    pyra->grande[current_player][0] == 1 ? printf("X") : printf("_");
+    printf("\n");
+
+    printf("%12s", "Poker: ");
+    for(int i = 0; i < 2; i++) {
+        if(pyra->poker[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Full House: ");
+    for(int i = 0; i < 3; i++) {
+        if(pyra->full_house[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Straight: ");
+    for(int i = 0; i < 4; i++) {
+        if(pyra->straight[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Aces: ");
+    for(int i = 0; i < 5; i++) {
+        if(pyra->aces[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Kings: ");
+    for(int i = 0; i < 6; i++) {
+        if(pyra->kings[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Queens: ");
+    for(int i = 0; i < 7; i++) {
+        if(pyra->queens[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Jacks: ");
+    for(int i = 0; i < 8; i++) {
+        if(pyra->jacks[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Tens: ");
+    for(int i = 0; i < 9; i++) {
+        if(pyra->tens[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
+
+    printf("%12s", "Nines: ");
+    for(int i = 0; i < 10; i++) {
+        if(pyra->nines[current_player][i] == 1) {
+            printf("X");
+        } else {
+            printf("_");
+        }
+    }
+    printf("\n");
 
 }
 
-void print_pyramid(){
-
+bool check_pyramid(struct pyramid *pyra) {
+    return !(pyra->grande[current_player][0] == 0 ||
+            pyra->poker[current_player][1] == 0 ||
+            pyra->full_house[current_player][2] == 0 ||
+            pyra->straight[current_player][3] == 0 ||
+            pyra->aces[current_player][4] == 0 ||
+            pyra->kings[current_player][5] == 0 ||
+            pyra->queens[current_player][6] == 0 ||
+            pyra->jacks[current_player][7] == 0 ||
+            pyra->tens[current_player][8] == 0 ||
+            pyra->nines[current_player][9] == 0);
 }
