@@ -20,4 +20,10 @@ struct pyramid {
 
 };
 
+struct pyramid pyra = {0};
+
+void write_to_pyramid();
+
+void print_pyramid();
+
 #endif //POKERDICE_PYRAMID_H

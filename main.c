@@ -8,14 +8,14 @@
 #include "can_must_table.h"
 #include "pyramid.h"
 
-#define LENGTH 5 //length five because we throw 5 dices
+#define DICES 5 //we throw 5 dices
 
 /// \brief the main() - saves most of the variables used by the game
 /// and calls each and every function inside this .c file
 /// function definitions are external to reduce clutter in main.c
 /// and for better overview of them
 ///
-/// \param LENGTH - how many dices are used in the game
+/// \param DICES - how many dices are used in the game
 /// \param player_throws - saves the current player's dice trow combination, and shows it to him
 /// \param player_points - saves player's points (later on displayed as sum)
 /// \param current_player - shows which player turn is, and displays it when needed (start of each round)
@@ -30,7 +30,7 @@
 /// system to reward players greatly for lucky first throws
 
 
-int player_throws[2][LENGTH];
+int player_throws[2][DICES];
 int player_points[2];
 int current_player = 1;
 
@@ -79,7 +79,7 @@ int main() {
 
 void translate(const int array[]) {
     //going through the array taking each element and then putting it in the switch machine for proper print
-    for (int i = 0; i < LENGTH; i++) {
+    for (int i = 0; i < DICES; i++) {
         if (array[i] == 0) {
             setbuf(stdout, 0);
             printf("%-7d", 9);
@@ -119,7 +119,7 @@ bool keep_dice(int keep, int *amount_of_rolls, bool *has_rerolled) {
             setbuf(stdout, 0);
             printf("\nHow many dice to save?\n(Numbers between 0 [none] and 5 [all, end turn], enter to confirm)\n");
             scanf("%d", &keep);
-            int *array_keep = malloc(LENGTH * sizeof(int));
+            int *array_keep = malloc(DICES * sizeof(int));
             if (keep == 5) {
                 return true;
             }
@@ -145,13 +145,10 @@ bool calculate_points(const bool *has_rerolled) {
     int temp_sum = 0;
     bool point_summation_ended = false;
 
-    //need to implement if else statement to check if some of the special hands are made on 1st throw
-    /*if has_rerolled true => fewer points else more points*/
-    if (is_consecutive(player_throws[current_player],
-                       LENGTH)) { // Straight from 9 to King or from 10 to Ace forward and backwards
+    if (is_consecutive(player_throws[current_player])) {
         (*has_rerolled) ? (temp_sum += 20) : (temp_sum += 25);
         point_summation_ended = true;
-    } else if (is_grande(player_throws[current_player], LENGTH)) { // Works only with 5x Ace
+    } else if (is_grande()) {
         (*has_rerolled) ? (temp_sum += 50) : (temp_sum += 80);
         point_summation_ended = true;
     } else if (is_fullhouse(player_throws[current_player])) {
@@ -163,7 +160,7 @@ bool calculate_points(const bool *has_rerolled) {
     }
 
     if (!point_summation_ended) {
-        for (int i = 0; i < LENGTH; i++) {
+        for (int i = 0; i < DICES; i++) {
             if (player_throws[current_player][i] == 0) { // 9
                 temp_sum += 1;
             } else if (player_throws[current_player][i] == 1) { // 10
@@ -188,9 +185,9 @@ bool calculate_points(const bool *has_rerolled) {
     return point_summation_ended;
 }
 
-int is_min(const int player_throws_min[], int array_throws_length) {
+int is_min(const int player_throws_min[]) {
     int min = player_throws_min[0];
-    for (int i = 0; i < array_throws_length; i++) {
+    for (int i = 0; i < DICES; i++) {
         if (player_throws_min[i] < min) {
             min = player_throws_min[i];
         }
@@ -198,9 +195,9 @@ int is_min(const int player_throws_min[], int array_throws_length) {
     return min;
 }
 
-int is_max(const int player_throws_max[], int array_throws_length) {
+int is_max(const int player_throws_max[]) {
     int max = player_throws_max[0];
-    for (int i = 0; i < array_throws_length; i++) {
+    for (int i = 0; i < DICES; i++) {
         if (player_throws_max[i] > max) {
             max = player_throws_max[i];
         }
@@ -208,17 +205,17 @@ int is_max(const int player_throws_max[], int array_throws_length) {
     return max;
 }
 
-bool is_consecutive(int player_throws_consecutive[], int array_throws_length) {
+bool is_consecutive(int player_throws_consecutive[]) {
     //get the minimum number from the array
-    int min = is_min(player_throws_consecutive, array_throws_length);
+    int min = is_min(player_throws_consecutive);
 
     //get the maximum number from the array
-    int max = is_max(player_throws_consecutive, array_throws_length);
+    int max = is_max(player_throws_consecutive);
 
     //if max - min + 1 == arrayThrowsLength, only then check all elements
-    if (max - min + 1 == array_throws_length) {
+    if (max - min + 1 == DICES) {
         int indexOne;
-        for (indexOne = 0; indexOne < array_throws_length; indexOne++) {
+        for (indexOne = 0; indexOne < DICES; indexOne++) {
             int indexTwo;
             if (player_throws_consecutive[indexOne] < 0) {
                 indexTwo = -player_throws_consecutive[indexOne] - min;
@@ -237,9 +234,16 @@ bool is_consecutive(int player_throws_consecutive[], int array_throws_length) {
     }
     //if max - min + 1 != n
     return false;
-} //straight
+} //Straight 20/25pts
 
-bool is_grande(const int grande_array[], int array_length) {
+bool is_grande() {//const int grande_array[], int array_length) { old style Grande 50/80pts
+    int *throws = gather_counts();
+
+    if (throws[5] == 5 || throws[4] == 5 || throws[3] == 5 || throws[2] == 5 || throws[1] == 5 || throws[0] == 5 ) {
+        return true;
+    } else {
+        return false;
+    }/*
     const int checker = 5; // because Aces = 5
     for (int i = 0; i < array_length; i++) {
         if (checker == grande_array[i]) {
@@ -248,7 +252,7 @@ bool is_grande(const int grande_array[], int array_length) {
             return false;
         }
     }
-    return true;
+    return true;*/
 }//grande
 
 bool is_poker() {
@@ -266,9 +270,9 @@ bool is_poker() {
             player_throws[current_player][3] == player_throws[current_player][4];
 
     return (first_possibility || second_possibility);
-}//poker
+}//Poker 40/45pts
 
-bool is_fullhouse() {
+bool is_fullhouse() { //Full House 30/35pts
     bool first_possibility, second_possibility;
     is_highest(player_throws[current_player]);
 
@@ -288,11 +292,11 @@ bool is_fullhouse() {
 void is_highest() {
     int i, j, minimum_j;
 
-    for (i = 0; i < LENGTH; i++) {
+    for (i = 0; i < DICES; i++) {
         // search the array for the minimum element value in the array
         minimum_j = i;   // take that array[i] is the minimum
 
-        for (j = i + 1; j < LENGTH; j++) {
+        for (j = i + 1; j < DICES; j++) {
             if (player_throws[current_player][j] < player_throws[current_player][minimum_j]) {
                 minimum_j = j;    // found smaller => updating minimum_j with new element
             }
@@ -313,7 +317,7 @@ void roll_dice(int keep, const int *array_keep) {
             }
         }
         if (!isKeep) {
-            player_throws[current_player][j] = rand() % 6;
+            player_throws[current_player][j] = 0;//rand() % 6;
         }
     }
 }
@@ -404,7 +408,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
 
     int *single_throws = gather_counts();
 
-    if (is_grande(player_throws[current_player], LENGTH)) {
+    if (is_grande()) {
         printf("You got Grande! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 9);
 
@@ -419,7 +423,7 @@ void table_point_scoring(int points_array[][2], bool has_rerolled, int game_mode
         already_saved = save_special(points_array, game_mode, 7);
 
         points_array[10][current_player] += (has_rerolled ? 30 : 35);
-    } else if (is_consecutive(player_throws[current_player], LENGTH)) {
+    } else if (is_consecutive(player_throws[current_player])) {
         printf("You got Straight! Wanna save? y/n\n");
         already_saved = save_special(points_array, game_mode, 6);
 
@@ -443,19 +447,19 @@ int *gather_counts() {
     * after that it is printed so the player can see the result
     * currently prints it when the player wishes to save; right before printing the table which
     * makes it completely useless*/
-    for (int i = 0; i < LENGTH; i++) {
+    for (int i = 0; i < DICES; i++) {
         if (player_throws[current_player][i] == 0) {
-            single_throws[0] += 1;
+            single_throws[0] += 1; //9s
         } else if (player_throws[current_player][i] == 1) {
-            single_throws[1] += 1;
+            single_throws[1] += 1; //10s
         } else if (player_throws[current_player][i] == 2) {
-            single_throws[2] += 1;
+            single_throws[2] += 1; //Js
         } else if (player_throws[current_player][i] == 3) {
-            single_throws[3] += 1;
+            single_throws[3] += 1; //Qs
         } else if (player_throws[current_player][i] == 4) {
-            single_throws[4] += 1;
+            single_throws[4] += 1; //Ks
         } else if (player_throws[current_player][i] == 5) {
-            single_throws[5] += 1;
+            single_throws[5] += 1; //As
         }
     }
     return single_throws;
@@ -532,6 +536,7 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
     int *current_score = &points_array[position][current_player];
     int current_amount = singles_throws[position];
     bool has_special = false;
+
     //must add prints to explain the point of each case!!!!
     switch (round_counter) {
         case 11:
@@ -547,7 +552,7 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
             break;
         case 17:
             printf("You must make a Straight this round in order to get points!\n");
-            has_special = is_consecutive(player_throws[current_player], LENGTH);
+            has_special = is_consecutive(player_throws[current_player]);
             break;
         case 18:
             printf("You must make a Full House this round in order to get points!\n");
@@ -559,7 +564,7 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
             break;
         case 20:
             printf("You must make a Grande this round in order to get points!\n");
-            has_special = is_grande(player_throws[current_player], LENGTH);
+            has_special = is_grande();
             break;
         default:
             break;
@@ -570,7 +575,114 @@ void can_must_pt_two(int round_counter, int points_array[][2]) {
     } else if (*current_score == -1) {
         *current_score = 0;
     }
+
     table_point_summary(points_array);
     free(singles_throws);
 }
 
+void write_to_pyramid(){
+    int *save_singles = gather_counts();
+    int save_this;
+
+    printf("What do you want to save to the Pyramid?\nYou can save only once per round.\n");
+    scanf(" %d", &save_this);
+
+    if (is_grande()) {
+        if(pyra.grande[0][current_player] == 0) {
+            pyra.grande[0][current_player] = 1;
+        } else {
+            printf("You can't write any more Grandes! This row is already filled!\n");
+        }
+    }
+
+    if(is_poker()) {
+        if (pyra.poker[0][current_player] == 0) {
+            pyra.poker[0][current_player] = 1;
+        } else if (pyra.poker[1][current_player] == 0) {
+            pyra.poker[1][current_player] = 1;
+        } else {
+            printf("You can't write any more Pokers! This row is already filled!\n");
+        }
+    }
+
+    if (is_fullhouse()) {
+        if (pyra.full_house[0][current_player] == 0) {
+            pyra.full_house[0][current_player] = 1;
+        } else if ( pyra.full_house[1][current_player] == 0) {
+            pyra.full_house[1][current_player] = 1;
+        } else if (pyra.full_house[2][current_player] == 0) {
+            pyra.full_house[2][current_player] = 1;
+        } else {
+            printf("You can't write any more Full Houses! This row is already filled!\n");
+        }
+    }
+
+    if (is_consecutive(player_throws[current_player])) {
+        if (pyra.straight[0][current_player] == 0) {
+            pyra.straight[0][current_player] = 1;
+        } else if ( pyra.straight[1][current_player] == 0) {
+            pyra.straight[1][current_player] = 1;
+        } else if (pyra.straight[2][current_player] == 0) {
+            pyra.straight[2][current_player] = 1;
+        } else if (pyra.straight[3][current_player] == 0) {
+            pyra.straight[3][current_player] = 1;
+        } else {
+            printf("You can't write any more Straights! This row is already filled!\n");
+        }
+    }
+
+    if(save_this == 5) {
+        for (int i = 0; i <= 5; i++) {
+            if (save_singles[5] == i) {
+                pyra.aces[i][current_player] = i;
+            } else {
+                printf("You can't write any more Aces! This row is already filled!\n");
+            }
+        }
+    } else if (save_this == 4) {
+        for (int i = 0; i <= 6; i++) {
+            if (save_singles[4] == i) {
+                pyra.kings[i][current_player] = i;
+            } else {
+                printf("You can't write any more Kings! This row is already filled!\n");
+            }
+        }
+    } else if (save_this == 3) {
+        for (int i = 0; i <= 7; i++) {
+            if (save_singles[3] == i) {
+                pyra.queens[i][current_player] = i;
+            } else {
+                printf("You can't write any more Queens! This row is already filled!\n");
+            }
+        }
+    } else if (save_this == 2) {
+        for (int i = 0; i <= 8; i++) {
+            if (save_singles[2] == i) {
+                pyra.jacks[i][current_player] = i;
+            } else {
+                printf("You can't write any more Jacks! This row is already filled!\n");
+            }
+        }
+    } else if (save_this == 1) {
+        for (int i = 0; i <= 9; i++) {
+            if (save_singles[1] == i) {
+                pyra.tens[i][current_player] = i;
+            } else {
+                printf("You can't write any more Tens! This row is already filled!\n");
+            }
+        }
+    } else if (save_this == 0) {
+        for (int i = 0; i <= 10; i++) {
+            if (save_singles[0] == i) {
+                pyra.nines[i][current_player] = i;
+            } else {
+                printf("You can't write any more Nines! This row is already filled!\n");
+            }
+        }
+    }
+
+}
+
+void print_pyramid(){
+
+}
